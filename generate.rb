@@ -9,7 +9,8 @@ output_EMOJI = 'EmojiData.txt'
 utf8_source = 'UTF-8'
 utf8_output = 'UTF-8-EAW-EMOJI-FULLWIDTH'
 eaw_and_emoji_elisp = 'eaw_and_emoji.el'
-wcwidth_test = 'wcwidth_test.c'
+wcwidth_test_eaw = 'wcwidth_test_eaw.c'
+wcwidth_test_emoji = 'wcwidth_test_emoji.c'
 
 $combining_charactor_range = "0300".to_i(16).."036F".to_i(16)
 $variation_selector_range1 = "180B".to_i(16).."180D".to_i(16)
@@ -92,6 +93,30 @@ File.open(output_EAW_amb, 'w+'){|f|
   }
 }
 
+File.open(wcwidth_test_eaw, 'w+'){|f|
+  f.puts <<-EOS
+#define _XOPEN_SOURCE
+#include <stdio.h>
+#include <locale.h>
+#include <wchar.h>
+
+void print_wcwidth(wchar_t c, char *str)
+{
+  printf("wcwidth('[%lc]') == %d, codepoint [%x], %s\\n", c, wcwidth(c), c, str);
+}
+int main()
+{
+  setlocale(LC_CTYPE, "");
+EOS
+  list_eaw.each {|k, v|
+    f.puts "  print_wcwidth(0x" + k.to_i(16).to_s(16) + ", \"#{v}\");"
+  }
+  f.puts <<-EOS
+  return 0;
+}
+EOS
+}
+
 list_emoji = {}
 File.open(emoji_source).each_line {|line|
   if line =~/^([a-fA-F\d]+)\s;.*#\sV(\d.\d)\s(.+)/
@@ -113,8 +138,31 @@ File.open(output_EMOJI, 'w+'){|f|
   }
 }
 
-list = list_eaw.merge(list_emoji).sort{|(k1,v1), (k2,v2)| k1.to_i(16) <=> k2.to_i(16)}
+File.open(wcwidth_test_emoji, 'w+'){|f|
+  f.puts <<-EOS
+#define _XOPEN_SOURCE
+#include <stdio.h>
+#include <locale.h>
+#include <wchar.h>
 
+void print_wcwidth(wchar_t c, char *str)
+{
+  printf("wcwidth('[%lc]') == %d, codepoint [%x], %s\\n", c, wcwidth(c), c, str);
+}
+int main()
+{
+  setlocale(LC_CTYPE, "");
+EOS
+  list_emoji.each {|k, v|
+    f.puts "  print_wcwidth(0x" + k.to_i(16).to_s(16) + ", \"#{v}\");"
+  }
+  f.puts <<-EOS
+  return 0;
+}
+EOS
+}
+
+list = list_eaw.merge(list_emoji).sort{|(k1,v1), (k2,v2)| k1.to_i(16) <=> k2.to_i(16)}
 File.open(eaw_and_emoji_elisp, 'w+'){|f|
   f.puts "(setq east-asian-ambiguous-and-emoji\n      '("
   list.each {|k, v|
@@ -151,28 +199,4 @@ File.open(utf8_output, 'w+'){|f|
     end
   }
   f.puts "END WIDTH"
-}
-
-File.open(wcwidth_test, 'w+'){|f|
-  f.puts <<-EOS
-#define _XOPEN_SOURCE
-#include <stdio.h>
-#include <locale.h>
-#include <wchar.h>
-
-void print_wcwidth(wchar_t c, char *str)
-{
-  printf("wcwidth('[%lc]') == %d, codepoint [%x], %s\\n", c, wcwidth(c), c, str);
-}
-int main()
-{
-  setlocale(LC_CTYPE, "");
-EOS
-  list.each {|k, v|
-    f.puts "  print_wcwidth(0x" + k.to_i(16).to_s(16) + ", \"#{v}\");"
-  }
-  f.puts <<-EOS
-  return 0;
-}
-EOS
 }

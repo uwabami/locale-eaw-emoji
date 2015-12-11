@@ -9,9 +9,11 @@ UTF8_URI='https://sourceware.org/git/?p=glibc.git;a=blob_plain;f=localedata/char
 Generated_Files  = UTF-8-EAW-EMOJI-FULLWIDTH UTF-8-EAW-EMOJI-FULLWIDTH.gz
 Generated_Files += EastAsianAmbiguous.txt EmojiData.txt
 Generated_Files += eaw_and_emoji.el
+Generated_Files += wcwidth_test_eaw.c
+Generated_Files += wcwidth_test_emoji.c
 Downloaded_Files = emoji-data.txt EastAsianWidth.txt UnicodeData.txt UTF-8 i18n
 
-all: $(Generated_Files) i18n wcwidth_test.out
+all: $(Generated_Files) i18n wcwidth_test_eaw.out wcwidth_test_emoji.out
 
 %.out: %.c
 	gcc -Wall -Wextra $< -o $@
@@ -37,10 +39,11 @@ UTF-8-EAW-EMOJI-FULLWIDTH: UTF-8 EastAsianWidth.txt emoji-data.txt UnicodeData.t
 UTF-8-EAW-EMOJI-FULLWIDTH.gz: UTF-8-EAW-EMOJI-FULLWIDTH
 	gzip -n -9 -c $^ > $@
 
-wcwidth_test.c: UTF-8-EAW-EMOJI-FULLWIDTH
+wcwidth_test_eaw.c: UTF-8-EAW-EMOJI-FULLWIDTH
+wcwidth_test_emoji.c: UTF-8-EAW-EMOJI-FULLWIDTH
 
 distclean: clean
 	-rm -rf $(Generated_Files)
 
 clean:
-	-rm -rf $(Downloaded_Files)
+	-rm -rf $(Downloaded_Files) *.out
