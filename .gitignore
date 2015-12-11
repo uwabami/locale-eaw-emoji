@@ -3,3 +3,6 @@ UTF-8
 UnicodeData.txt
 emoji-data.txt
 i18n
+wcwidth_test.c
+wcwidth_test.out
+

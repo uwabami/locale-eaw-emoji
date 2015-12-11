@@ -11,7 +11,10 @@ Generated_Files += EastAsianAmbiguous.txt EmojiData.txt
 Generated_Files += eaw_and_emoji.el
 Downloaded_Files = emoji-data.txt EastAsianWidth.txt UnicodeData.txt UTF-8 i18n
 
-all: $(Generated_Files) i18n
+all: $(Generated_Files) i18n wcwidth_test.out
+
+%.out: %.c
+	gcc -Wall -Wextra $< -o $@
 
 emoji-data.txt:
 	wget -O $@ $(EMOJI_URI)
@@ -33,6 +36,8 @@ UTF-8-EAW-EMOJI-FULLWIDTH: UTF-8 EastAsianWidth.txt emoji-data.txt UnicodeData.t
 
 UTF-8-EAW-EMOJI-FULLWIDTH.gz: UTF-8-EAW-EMOJI-FULLWIDTH
 	gzip -n -9 -c $^ > $@
+
+wcwidth_test.c: UTF-8-EAW-EMOJI-FULLWIDTH
 
 distclean: clean
 	-rm -rf $(Generated_Files)
