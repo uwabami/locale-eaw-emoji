@@ -43501,7 +43501,7 @@ WIDTH
 <U000E01ED>	0
 <U000E01EE>	0
 <U000E01EF>	0
-% Add East Asian Width and Emoji
+% Add East Asian Ambiguous Width and Emoji as fullwidth
 <U00A1> 2 % INVERTED EXCLAMATION MARK
 <U00A4> 2 % CURRENCY SIGN
 <U00A7> 2 % SECTION SIGN

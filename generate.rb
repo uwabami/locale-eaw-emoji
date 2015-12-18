@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
 
+require 'pp'
+
+version = ARGV[0] ||= "7.0"
 eaw_source = 'EastAsianWidth.txt'
 emoji_source = 'emoji-data.txt'
 unicode_source = 'UnicodeData.txt'
@@ -11,6 +14,8 @@ utf8_output = 'UTF-8-EAW-EMOJI-FULLWIDTH'
 eaw_and_emoji_elisp = 'eaw_and_emoji.el'
 wcwidth_test_eaw = 'wcwidth_test_eaw.c'
 wcwidth_test_emoji = 'wcwidth_test_emoji.c'
+mlterm_main = 'mlterm_main_completion'
+mlterm_fonts = 'mlterm_aafont_completion'
 
 $combining_charactor_range = "0300".to_i(16).."036F".to_i(16)
 $variation_selector_range1 = "180B".to_i(16).."180D".to_i(16)
@@ -57,6 +62,21 @@ def desc_grep(hex)
   return desc
 end
 
+def nums2str_range(str)
+  @str = str
+  @nums = @str.split(' ').map{|s| s.to_i }.uniq.sort
+  @nums.inject([[@nums.shift]]){|r, s|
+    if r.last.last.succ == s
+      r.last << s
+    else
+      r << [s]
+    end
+    r
+  }.map {|i|
+    i.size > 1 ? ["U+"+i.first.to_s(16).upcase, i.last.to_s(16).upcase].join('-') : "U+" + i.first.to_s(16).upcase
+  }.join(",")
+end
+
 list_eaw = {}
 File.open(eaw_source).each_line {|line|
   if line =~/^([a-fA-F\d\.]+);(\w)\s+#\s+(.*)/
@@ -80,7 +100,17 @@ File.open(eaw_source).each_line {|line|
     end
   end
 }
-# list_eaw =
+
+list_emoji = {}
+File.open(emoji_source).each_line {|line|
+  if line =~/^([a-fA-F\d]+)\s;.*#\sV(\d.\d)\s(.+)/
+    range = $1
+    ver = $2.to_f
+    if ver <= version.to_f
+      list_emoji["#{range}"] = desc_grep(range)
+    end
+  end
+}
 
 File.open(output_EAW_amb, 'w+'){|f|
   list_eaw.sort{|(k1,v1), (k2,v2)| k1.to_i(16) <=> k2.to_i(16)}.each  {|k, v|
@@ -91,6 +121,24 @@ File.open(output_EAW_amb, 'w+'){|f|
       f.puts sprintf("[%c] U+%08X %s", k_int, k_int, v)
     end
   }
+}
+
+File.open(output_EMOJI, 'w+'){|f|
+  list_emoji.sort{|(k1,v1), (k2,v2)| k1.to_i(16) <=> k2.to_i(16)}.each {|k, v|
+    k_int = k.to_i(16)
+    if k_int <= "0xffff".to_i(16)
+      f.puts sprintf("[%c] U+%04X %s", k_int, k_int, v)
+    else
+      f.puts sprintf("[%c] U+%08X %s", k_int, k_int, v)
+    end
+  }
+}
+
+# remove EMOJI from EAW, duplicates
+list_emoji.each {|k, v|
+  if list_eaw[k]
+    list_eaw.delete(k)
+  end
 }
 
 File.open(wcwidth_test_eaw, 'w+'){|f|
@@ -117,27 +165,6 @@ EOS
 EOS
 }
 
-list_emoji = {}
-File.open(emoji_source).each_line {|line|
-  if line =~/^([a-fA-F\d]+)\s;.*#\sV(\d.\d)\s(.+)/
-    range = $1
-    ver = $2.to_f
-    if ver <= ARGV[0].to_f
-      list_emoji["#{range}"] = desc_grep(range)
-    end
-  end
-}
-File.open(output_EMOJI, 'w+'){|f|
-  list_emoji.sort{|(k1,v1), (k2,v2)| k1.to_i(16) <=> k2.to_i(16)}.each {|k, v|
-    k_int = k.to_i(16)
-    if k_int <= "0xffff".to_i(16)
-      f.puts sprintf("[%c] U+%04X %s", k_int, k_int, v)
-    else
-      f.puts sprintf("[%c] U+%08X %s", k_int, k_int, v)
-    end
-  }
-}
-
 File.open(wcwidth_test_emoji, 'w+'){|f|
   f.puts <<-EOS
 #define _XOPEN_SOURCE
@@ -162,10 +189,12 @@ EOS
 EOS
 }
 
-list = list_eaw.merge(list_emoji).sort{|(k1,v1), (k2,v2)| k1.to_i(16) <=> k2.to_i(16)}
 File.open(eaw_and_emoji_elisp, 'w+'){|f|
   f.puts "(setq east-asian-ambiguous-and-emoji\n      '("
-  list.each {|k, v|
+  list_eaw.each {|k, v|
+    f.puts sprintf("        #x%s ; %s", k, v)
+  }
+  list_emoji.each {|k, v|
     f.puts sprintf("        #x%s ; %s", k, v)
   }
   f.puts '        ))'
@@ -187,9 +216,10 @@ File.open(eaw_and_emoji_elisp, 'w+'){|f|
 EOS
 }
 
+list = list_eaw.merge(list_emoji).sort{|(k1,v1), (k2,v2)| k1.to_i(16) <=> k2.to_i(16)}
 File.open(utf8_output, 'w+'){|f|
   f.puts File.readlines(utf8_source)[0..-2]
-  f.puts "% Add East Asian Width and Emoji"
+  f.puts "% Add East Asian Ambiguous Width and Emoji as fullwidth"
   list.each {|k, v|
     k_int = k.to_i(16)
     if k_int <= "0xffff".to_i(16)
@@ -200,3 +230,30 @@ File.open(utf8_output, 'w+'){|f|
   }
   f.puts "END WIDTH"
 }
+
+# str_eaw = ''
+# list_eaw.each {|k, v|
+#   str_eaw += "#{k.to_i(16)} "
+# }
+# str_emoji = ''
+# list_emoji.each {|k, v|
+#   str_emoji += "#{k.to_i(16)} "
+# }
+# File.open(mlterm_main, 'w+'){|f|
+#   f.puts <<-EOS
+# # not_use_unicode_font を true とした場合でも、このオプションで指定した
+# # 範囲の文字は、常に UNICODE のまま表示する。
+# EOS
+#   f.puts "unicode_noconv_areas = #{nums2str_range(str_eaw + ' ' + str_emoji)}"
+#   f.puts <<-EOS
+# # EastAsianWidth.txt に関わらず、このオプションで指定した範囲の文字は
+# # 常に全角幅とする。範囲の指定方法は、unicode_noconv_areas オプション参照。
+# EOS
+#   f.puts "unicode_full_width_areas = #{nums2str_range(str_eaw + ' ' + str_emoji)}"
+# }
+# File.open(mlterm_fonts, 'w+'){|f|
+#   f.puts "# EAW range"
+#   nums2str_range(str_emoji).split(',').each do |r|
+#     f.puts "#{r} = Symbola;"
+#   end
+# }
