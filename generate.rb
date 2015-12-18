@@ -210,6 +210,7 @@ File.open(eaw_and_emoji_elisp, 'w+'){|f|
     (setq char-width-table table)))
 
 (defun eaw-and-emoji-fullwidth ()
+  (setq nobreak-char-display nil)
   (eaw-and-emoji-set-width 2))
 
 (provide 'eaw_and_emoji)
