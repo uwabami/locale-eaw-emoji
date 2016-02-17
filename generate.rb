@@ -83,7 +83,7 @@ File.open(eaw_source).each_line {|line|
     range = $1
     prop = $2
     desc = $3
-    if prop == 'A'
+    if prop == 'A' or prop =='Na'
       if range =~/([a-fA-F\d]+)\.\.([a-fA-F\d]+)/
         range_start = $1
         range_end = $2
@@ -232,26 +232,35 @@ File.open(utf8_output, 'w+'){|f|
   f.puts "END WIDTH"
 }
 
-# str_eaw = ''
-# list_eaw.each {|k, v|
-#   str_eaw += "#{k.to_i(16)} "
-# }
-# str_emoji = ''
-# list_emoji.each {|k, v|
-#   str_emoji += "#{k.to_i(16)} "
-# }
-# File.open(mlterm_main, 'w+'){|f|
-#   f.puts <<-EOS
-# # not_use_unicode_font を true とした場合でも、このオプションで指定した
-# # 範囲の文字は、常に UNICODE のまま表示する。
-# EOS
-#   f.puts "unicode_noconv_areas = #{nums2str_range(str_eaw + ' ' + str_emoji)}"
-#   f.puts <<-EOS
-# # EastAsianWidth.txt に関わらず、このオプションで指定した範囲の文字は
-# # 常に全角幅とする。範囲の指定方法は、unicode_noconv_areas オプション参照。
-# EOS
-#   f.puts "unicode_full_width_areas = #{nums2str_range(str_eaw + ' ' + str_emoji)}"
-# }
+list.sort{|(k1,v1), (k2,v2)| k1.to_i(16) <=> k2.to_i(16)}.each  {|k, v|
+  k_int = k.to_i(16)
+  if k_int <= "0xffff".to_i(16)
+    puts sprintf("[%c] U+%04X %s", k_int, k_int, v)
+  else
+    puts sprintf("[%c] U+%08X %s", k_int, k_int, v)
+  end
+}
+
+str = ''
+list_eaw.each {|k, v|
+  str += "#{k.to_i(16)} "
+}
+list_emoji.each {|k, v|
+  str += "#{k.to_i(16)} "
+}
+str = str.split(' ').sort{|a, b| a.to_i <=> b.to_i}.join(' ')
+File.open(mlterm_main, 'w+'){|f|
+  f.puts <<-EOS
+# not_use_unicode_font を true とした場合でも、このオプションで指定した
+# 範囲の文字は、常に UNICODE のまま表示する。
+EOS
+  f.puts "unicode_noconv_areas = #{nums2str_range(str)}"
+  f.puts <<-EOS
+# EastAsianWidth.txt に関わらず、このオプションで指定した範囲の文字は
+# 常に全角幅とする。範囲の指定方法は、unicode_noconv_areas オプション参照。
+EOS
+  f.puts "unicode_full_width_areas = #{nums2str_range(str)}"
+}
 # File.open(mlterm_fonts, 'w+'){|f|
 #   f.puts "# EAW range"
 #   nums2str_range(str_emoji).split(',').each do |r|

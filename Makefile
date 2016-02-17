@@ -1,4 +1,4 @@
-UNICODE_VER=7.0.0
+UNICODE_VER=8.0.0
 UNICODE_URI=http://ftp.unicode.org/Public/$(UNICODE_VER)/ucd/UnicodeData.txt
 EAW_URI=http://www.unicode.org/Public/$(UNICODE_VER)/ucd/EastAsianWidth.txt
 EMOJI_URI=http://unicode.org/Public/emoji/1.0/emoji-data.txt
