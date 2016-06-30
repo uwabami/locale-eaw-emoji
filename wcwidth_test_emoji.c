@@ -249,6 +249,9 @@ int main()
   print_wcwidth(0x1f32a, "CLOUD WITH TORNADO");
   print_wcwidth(0x1f32b, "FOG");
   print_wcwidth(0x1f32c, "WIND BLOWING FACE");
+  print_wcwidth(0x1f32d, "HOT DOG");
+  print_wcwidth(0x1f32e, "TACO");
+  print_wcwidth(0x1f32f, "BURRITO");
   print_wcwidth(0x1f330, "CHESTNUT");
   print_wcwidth(0x1f331, "SEEDLING");
   print_wcwidth(0x1f332, "EVERGREEN TREE");
@@ -327,6 +330,8 @@ int main()
   print_wcwidth(0x1f37b, "CLINKING BEER MUGS");
   print_wcwidth(0x1f37c, "BABY BOTTLE");
   print_wcwidth(0x1f37d, "FORK AND KNIFE WITH PLATE");
+  print_wcwidth(0x1f37e, "BOTTLE WITH POPPING CORK");
+  print_wcwidth(0x1f37f, "POPCORN");
   print_wcwidth(0x1f380, "RIBBON");
   print_wcwidth(0x1f381, "WRAPPED PRESENT");
   print_wcwidth(0x1f382, "BIRTHDAY CAKE");
@@ -401,6 +406,11 @@ int main()
   print_wcwidth(0x1f3cc, "GOLFER");
   print_wcwidth(0x1f3cd, "RACING MOTORCYCLE");
   print_wcwidth(0x1f3ce, "RACING CAR");
+  print_wcwidth(0x1f3cf, "CRICKET BAT AND BALL");
+  print_wcwidth(0x1f3d0, "VOLLEYBALL");
+  print_wcwidth(0x1f3d1, "FIELD HOCKEY STICK AND BALL");
+  print_wcwidth(0x1f3d2, "ICE HOCKEY STICK AND PUCK");
+  print_wcwidth(0x1f3d3, "TABLE TENNIS PADDLE AND BALL");
   print_wcwidth(0x1f3d4, "SNOW CAPPED MOUNTAIN");
   print_wcwidth(0x1f3d5, "CAMPING");
   print_wcwidth(0x1f3d6, "BEACH WITH UMBRELLA");
@@ -434,6 +444,14 @@ int main()
   print_wcwidth(0x1f3f4, "WAVING BLACK FLAG");
   print_wcwidth(0x1f3f5, "ROSETTE");
   print_wcwidth(0x1f3f7, "LABEL");
+  print_wcwidth(0x1f3f8, "BADMINTON RACQUET AND SHUTTLECOCK");
+  print_wcwidth(0x1f3f9, "BOW AND ARROW");
+  print_wcwidth(0x1f3fa, "AMPHORA");
+  print_wcwidth(0x1f3fb, "EMOJI MODIFIER FITZPATRICK TYPE-1-2");
+  print_wcwidth(0x1f3fc, "EMOJI MODIFIER FITZPATRICK TYPE-3");
+  print_wcwidth(0x1f3fd, "EMOJI MODIFIER FITZPATRICK TYPE-4");
+  print_wcwidth(0x1f3fe, "EMOJI MODIFIER FITZPATRICK TYPE-5");
+  print_wcwidth(0x1f3ff, "EMOJI MODIFIER FITZPATRICK TYPE-6");
   print_wcwidth(0x1f400, "RAT");
   print_wcwidth(0x1f401, "MOUSE");
   print_wcwidth(0x1f402, "OX");
@@ -688,6 +706,7 @@ int main()
   print_wcwidth(0x1f4fb, "RADIO");
   print_wcwidth(0x1f4fc, "VIDEOCASSETTE");
   print_wcwidth(0x1f4fd, "FILM PROJECTOR");
+  print_wcwidth(0x1f4ff, "PRAYER BEADS");
   print_wcwidth(0x1f500, "TWISTED RIGHTWARDS ARROWS");
   print_wcwidth(0x1f501, "CLOCKWISE RIGHTWARDS AND LEFTWARDS OPEN CIRCLE ARROWS");
   print_wcwidth(0x1f502, "CLOCKWISE RIGHTWARDS AND LEFTWARDS OPEN CIRCLE ARROWS WITH CIRCLED ONE OVERLAY");
@@ -752,6 +771,10 @@ int main()
   print_wcwidth(0x1f53d, "DOWN-POINTING SMALL RED TRIANGLE");
   print_wcwidth(0x1f549, "OM SYMBOL");
   print_wcwidth(0x1f54a, "DOVE OF PEACE");
+  print_wcwidth(0x1f54b, "KAABA");
+  print_wcwidth(0x1f54c, "MOSQUE");
+  print_wcwidth(0x1f54d, "SYNAGOGUE");
+  print_wcwidth(0x1f54e, "MENORAH WITH NINE BRANCHES");
   print_wcwidth(0x1f550, "CLOCK FACE ONE OCLOCK");
   print_wcwidth(0x1f551, "CLOCK FACE TWO OCLOCK");
   print_wcwidth(0x1f552, "CLOCK FACE THREE OCLOCK");
@@ -884,6 +907,8 @@ int main()
   print_wcwidth(0x1f640, "WEARY CAT FACE");
   print_wcwidth(0x1f641, "SLIGHTLY FROWNING FACE");
   print_wcwidth(0x1f642, "SLIGHTLY SMILING FACE");
+  print_wcwidth(0x1f643, "UPSIDE-DOWN FACE");
+  print_wcwidth(0x1f644, "FACE WITH ROLLING EYES");
   print_wcwidth(0x1f645, "FACE WITH NO GOOD GESTURE");
   print_wcwidth(0x1f646, "FACE WITH OK GESTURE");
   print_wcwidth(0x1f647, "PERSON BOWING DEEPLY");
@@ -970,6 +995,7 @@ int main()
   print_wcwidth(0x1f6cd, "SHOPPING BAGS");
   print_wcwidth(0x1f6ce, "BELLHOP BELL");
   print_wcwidth(0x1f6cf, "BED");
+  print_wcwidth(0x1f6d0, "PLACE OF WORSHIP");
   print_wcwidth(0x1f6e0, "HAMMER AND WRENCH");
   print_wcwidth(0x1f6e1, "SHIELD");
   print_wcwidth(0x1f6e2, "OIL DRUM");
@@ -981,5 +1007,20 @@ int main()
   print_wcwidth(0x1f6ec, "AIRPLANE ARRIVING");
   print_wcwidth(0x1f6f0, "SATELLITE");
   print_wcwidth(0x1f6f3, "PASSENGER SHIP");
+  print_wcwidth(0x1f910, "ZIPPER-MOUTH FACE");
+  print_wcwidth(0x1f911, "MONEY-MOUTH FACE");
+  print_wcwidth(0x1f912, "FACE WITH THERMOMETER");
+  print_wcwidth(0x1f913, "NERD FACE");
+  print_wcwidth(0x1f914, "THINKING FACE");
+  print_wcwidth(0x1f915, "FACE WITH HEAD-BANDAGE");
+  print_wcwidth(0x1f916, "ROBOT FACE");
+  print_wcwidth(0x1f917, "HUGGING FACE");
+  print_wcwidth(0x1f918, "SIGN OF THE HORNS");
+  print_wcwidth(0x1f980, "CRAB");
+  print_wcwidth(0x1f981, "LION FACE");
+  print_wcwidth(0x1f982, "SCORPION");
+  print_wcwidth(0x1f983, "TURKEY");
+  print_wcwidth(0x1f984, "UNICORN FACE");
+  print_wcwidth(0x1f9c0, "CHEESE WEDGE");
   return 0;
 }
