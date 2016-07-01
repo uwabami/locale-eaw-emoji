@@ -3,7 +3,7 @@
 
 require 'pp'
 
-version = ARGV[0] ||= "7.0"
+version = ARGV[0] ||= "8.0"
 eaw_source = 'EastAsianWidth.txt'
 emoji_source = 'emoji-data.txt'
 unicode_source = 'UnicodeData.txt'
