@@ -2,7 +2,7 @@
 
 unicode #UAX11 において文字幅が曖昧(A)，つまり文脈に依存して文字幅が半角幅だったり全角幅だったりする文字と，いわゆる絵文字(#UTR 51) について，強制的に文字幅を =2= ，つまり全角幅にするよう修正したロケールデータと，それを生成するための ruby script です．
 
-ちなみに，glibc <= 2.21 のロケールは Unicode 5.0 が用いられていますが，対応している絵文字が少ないので，glibc 2.23 の持つ =i18n=, =UTF-8= とUnicode 8.0のデータを用いて生成しています．
+ちなみに，glibc <= 2.21 のロケールは Unicode 5.0 が用いられていますが，対応している絵文字が少ないので，glibc 2.24 の持つ =i18n=, =UTF-8= とUnicode 8.0のデータを用いて生成しています．
 
 - [[EastAsianAmbiguous.txt][曖昧文字幅となっている文字の一覧]]
 - [[file:EmojiData.txt][絵文字のうち，Unicode 8.0 で定義されている文字の一覧]]
@@ -22,7 +22,7 @@ unicode #UAX11 において文字幅が曖昧(A)，つまり文脈に依存し�
 以下，Debian の場合です．ロケールデータの置き場所や更新方法はお使いの環境に合わせて適宜修正して下さい．
 
 1. make, ruby, wget を install して下さい
-2. git clone した後に =make= すると， =unicode.org= と =glibc2.23= から，必要なファイルを download した後， =UTF-8-EAW-EMOJI-FULLWIDTH.gz= と =eaw_and_emoji.el= が生成されます．
+2. git clone した後に =make= すると， =unicode.org= と =glibc2.24= から，必要なファイルを download した後， =UTF-8-EAW-EMOJI-FULLWIDTH.gz= と =eaw_and_emoji.el= が生成されます．
 3. ダウンロードされた =i18n= を =/usr/share/i18n/locales= 以下に copy します．
 4. 生成した =UTF-8-EAW-EMOJI-FULLWIDTH.gz= を =/usr/share/i18n/charmaps= に copy します．
 5. =/etc/locale.gen= 中の =ja_JP.UTF-8= の行を
