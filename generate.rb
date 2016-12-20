@@ -191,20 +191,22 @@ EOS
 
 File.open(eaw_and_emoji_elisp, 'w+'){|f|
   f.puts <<-EOS
-;;; eaw_and_emoji.el -- set UAX11 and Emoji as double width
+;;; eaw_and_emoji.el --- set UAX11 and Emoji as double width
 
 ;; Copyright (C) 2010-2016 Youhei SASAKI <uwabami@gfd-dennou.org>
 
 ;; Author: Youhei SASAKI <uwabami@gfd-dennou.org>
-;; Created: #{Time.now}
+;; Created: 2015-12-10 08:09:00 +0900
+;; Updated: #{Time.now}
 ;; Version: 0.0.1
 ;; Package-Version: #{Time.now.strftime("%Y%m%d.%H%M%S")}
+;; Package-Requires: nil
 ;; Keywords: tools
 ;; URL: https://github.com/uwabami/locale-eaw-emoji
 
 ;; This file is not part of GNU Emacs.
-
-;;; License
+;;
+;; License:
 ;;
 ;; Permission is hereby granted, free of charge, to any person obtaining a
 ;; copy of this software and associated documentation files (the "Software"),
@@ -224,11 +226,11 @@ File.open(eaw_and_emoji_elisp, 'w+'){|f|
 ;; TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 ;; SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-;;; Commentry
+;;; Commentry:
 
 ;; This file is auto-generated file. Please sea `generate.rb' in this repos.
 
-;;; Code
+;;; Code:
 
 EOS
   f.puts "(setq east-asian-ambiguous-and-emoji\n      '("
