@@ -1,8 +1,17 @@
-;;; locale-eaw-emoji.el -- set UAX11 and Emoji as double width
-
+;;; eaw_and_emoji.el -- set UAX11 and Emoji as double width
+;;
+;; Copyright (C) 2010-2016 Youhei SASAKI <uwabami@gfd-dennou.org>
+;;
 ;; Author: Youhei SASAKI <uwabami@gfd-dennou.org>
-;; Update: 2016-12-20 18:34:23 +0900
+;; Maintainer: Youhei SASAKI <uwabami@gfd-dennou.org>
+;; Created: 2016-12-20 18:46:02 +0900
+;; Keywords: languages
+;; Homepage: https://github.com/uwabami/locale-eaw-emoji
+;;
+;; This file is not part of GNU Emacs.
+;;
 ;;; License
+;;
 ;;
 ;; Permission is hereby granted, free of charge, to any person obtaining a
 ;; copy of this software and associated documentation files (the "Software"),
@@ -23,6 +32,8 @@
 ;; SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ;;; Commentry
+;; This file is auto-generated file. Please sea `generate.rb' in this repos.
+
 ;;; Code
 (setq east-asian-ambiguous-and-emoji
       '(
@@ -1910,3 +1921,4 @@
   (eaw-and-emoji-set-width 2))
 
 (provide 'eaw_and_emoji)
+;;; eaw_and_emoji.el ends here
