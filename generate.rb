@@ -196,9 +196,10 @@ File.open(eaw_and_emoji_elisp, 'w+'){|f|
 ;; Copyright (C) 2010-2016 Youhei SASAKI <uwabami@gfd-dennou.org>
 
 ;; Author: Youhei SASAKI <uwabami@gfd-dennou.org>
-;; Version: 0.0.1
 ;; Created: #{Time.now}
-;; Keywords: languages
+;; Version: 0.0.1
+;; Package-Version: #{Time.now.strftime("%Y%m%d.%H%M%S")}
+;; Keywords: tools
 ;; URL: https://github.com/uwabami/locale-eaw-emoji
 
 ;; This file is not part of GNU Emacs.
@@ -228,6 +229,7 @@ File.open(eaw_and_emoji_elisp, 'w+'){|f|
 ;; This file is auto-generated file. Please sea `generate.rb' in this repos.
 
 ;;; Code
+
 EOS
   f.puts "(setq east-asian-ambiguous-and-emoji\n      '("
   list_eaw.each {|k, v|
@@ -255,6 +257,7 @@ EOS
   (eaw-and-emoji-set-width 2))
 
 (provide 'eaw_and_emoji)
+
 ;;; eaw_and_emoji.el ends here
 EOS
 }

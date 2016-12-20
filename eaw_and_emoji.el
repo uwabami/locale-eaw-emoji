@@ -3,9 +3,10 @@
 ;; Copyright (C) 2010-2016 Youhei SASAKI <uwabami@gfd-dennou.org>
 
 ;; Author: Youhei SASAKI <uwabami@gfd-dennou.org>
+;; Created: 2016-12-20 18:57:28 +0900
 ;; Version: 0.0.1
-;; Created: 2016-12-20 18:51:09 +0900
-;; Keywords: languages
+;; Package-Version: 20161220.185728
+;; Keywords: tools
 ;; URL: https://github.com/uwabami/locale-eaw-emoji
 
 ;; This file is not part of GNU Emacs.
@@ -35,6 +36,7 @@
 ;; This file is auto-generated file. Please sea `generate.rb' in this repos.
 
 ;;; Code
+
 (setq east-asian-ambiguous-and-emoji
       '(
         #x00A1 ; INVERTED EXCLAMATION MARK
@@ -1921,4 +1923,5 @@
   (eaw-and-emoji-set-width 2))
 
 (provide 'eaw_and_emoji)
+
 ;;; eaw_and_emoji.el ends here
