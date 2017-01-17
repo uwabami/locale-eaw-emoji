@@ -3,8 +3,8 @@ UNICODE_URI=http://ftp.unicode.org/Public/$(UNICODE_VER)/ucd/UnicodeData.txt
 EAW_URI=http://www.unicode.org/Public/$(UNICODE_VER)/ucd/EastAsianWidth.txt
 EMOJI_URI=http://unicode.org/Public/emoji/1.0/emoji-data.txt
 # glibc2.24 - localedata
-I18N_URI='https://sourceware.org/git/?p=glibc.git;a=blob_plain;f=localedata/locales/i18n;hb=a91fd168a0db38563528dab1a13180fda2a5040c'
-UTF8_URI='https://sourceware.org/git/?p=glibc.git;a=blob_plain;f=localedata/charmaps/UTF-8;hb=a91fd168a0db38563528dab1a13180fda2a5040c'
+I18N_URI='http://sources.debian.net/data/main/g/glibc/2.24-9/localedata/locales/i18n'
+UTF8_URI='http://sources.debian.net/data/main/g/glibc/2.24-9/localedata/charmaps/UTF-8'
 
 Generated_Files  = UTF-8-EAW-EMOJI-FULLWIDTH UTF-8-EAW-EMOJI-FULLWIDTH.gz
 Generated_Files += EastAsianAmbiguous.txt EmojiData.txt
