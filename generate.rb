@@ -191,7 +191,7 @@ EOS
 
 File.open(eaw_and_emoji_elisp, 'w+'){|f|
   f.puts <<-EOS
-;;; eaw_and_emoji.el --- set UAX11 and Emoji as double width
+;;; locale-eaw-emoji.el --- set UAX11 and Emoji as double width
 
 ;; Copyright (C) 2010-2016 Youhei SASAKI <uwabami@gfd-dennou.org>
 
@@ -258,9 +258,9 @@ EOS
   (setq nobreak-char-display nil)
   (eaw-and-emoji-set-width 2))
 
-(provide 'eaw_and_emoji)
+(provide 'locale-eaw-emoji)
 
-;;; eaw_and_emoji.el ends here
+;;; local-eaw-emoji.el ends here
 EOS
 }
 

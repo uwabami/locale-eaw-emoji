@@ -8,7 +8,6 @@ UTF8_URI='http://sources.debian.net/data/main/g/glibc/2.24-9/localedata/charmaps
 
 Generated_Files  = UTF-8-EAW-EMOJI-FULLWIDTH UTF-8-EAW-EMOJI-FULLWIDTH.gz
 Generated_Files += EastAsianAmbiguous.txt EmojiData.txt
-Generated_Files += eaw_and_emoji.el
 Generated_Files += wcwidth_test_eaw.c
 Generated_Files += wcwidth_test_emoji.c
 Downloaded_Files = emoji-data.txt EastAsianWidth.txt UnicodeData.txt UTF-8 i18n
