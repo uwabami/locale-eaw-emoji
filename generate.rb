@@ -260,7 +260,7 @@ EOS
 
 (provide 'locale-eaw-emoji)
 
-;;; local-eaw-emoji.el ends here
+;;; locale-eaw-emoji.el ends here
 EOS
 }
 
