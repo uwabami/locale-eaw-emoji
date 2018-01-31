@@ -1,15 +1,15 @@
-UNICODE_VER=8.0.0
-UNICODE_URI=http://ftp.unicode.org/Public/$(UNICODE_VER)/ucd/UnicodeData.txt
-EAW_URI=http://www.unicode.org/Public/$(UNICODE_VER)/ucd/EastAsianWidth.txt
-EMOJI_URI=http://unicode.org/Public/emoji/1.0/emoji-data.txt
-# glibc2.24 - localedata
-I18N_URI='http://sources.debian.net/data/main/g/glibc/2.24-9/localedata/locales/i18n'
-UTF8_URI='http://sources.debian.net/data/main/g/glibc/2.24-9/localedata/charmaps/UTF-8'
+SOURCE_URL=http://sources.debian.net/data/main/g/glibc/2.26-6
+UNICODE_URI=$(SOURCE_URL)/localedata/unicode-gen/UnicodeData.txt
+EAW_URI=$(SOURCE_URL)/localedata/unicode-gen/EastAsianWidth.txt
+I18N_URI=$(SOURCE_URL)/localedata/locales/i18n
+UTF8_URI=$(SOURCE_URL)/localedata/charmaps/UTF-8
+EMOJI_URI=http://unicode.org/Public/emoji/5.0/emoji-data.txt
 
 Generated_Files  = UTF-8-EAW-EMOJI-FULLWIDTH UTF-8-EAW-EMOJI-FULLWIDTH.gz
 Generated_Files += EastAsianAmbiguous.txt EmojiData.txt
 Generated_Files += wcwidth_test_eaw.c
 Generated_Files += wcwidth_test_emoji.c
+Generated_Files += mlterm_main_completion
 Downloaded_Files = emoji-data.txt EastAsianWidth.txt UnicodeData.txt UTF-8 i18n
 
 all: $(Generated_Files) i18n wcwidth_test_eaw.out wcwidth_test_emoji.out

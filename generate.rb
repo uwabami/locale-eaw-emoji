@@ -3,7 +3,6 @@
 
 require 'pp'
 
-version = ARGV[0] ||= "8.0"
 eaw_source = 'EastAsianWidth.txt'
 emoji_source = 'emoji-data.txt'
 unicode_source = 'UnicodeData.txt'
@@ -100,18 +99,21 @@ File.open(eaw_source).each_line {|line|
     end
   end
 }
-
 list_emoji = {}
 File.open(emoji_source).each_line {|line|
-  if line =~/^([a-fA-F\d]+)\s;.*#\sV(\d.\d)\s(.+)/
+  if line =~/^([a-fA-F\d\.]+)\s+/
     range = $1
-    ver = $2.to_f
-    if ver <= version.to_f
-      list_emoji["#{range}"] = desc_grep(range)
+    if range =~/([a-fA-F\d]+)\.\.([a-fA-F\d]+)/
+      range_start = $1
+      range_end = $2
+      for i in range_start.to_i(16)..range_end.to_i(16)
+        list_emoji["#{hex_rjust(i.to_s(16).upcase)}"] = desc_grep("#{i.to_s(16)}")
+      end
+    else
+      list_emoji["#{hex_rjust(range).upcase}"] = desc_grep("#{range}")
     end
   end
 }
-
 File.open(output_EAW_amb, 'w+'){|f|
   list_eaw.sort{|(k1,v1), (k2,v2)| k1.to_i(16) <=> k2.to_i(16)}.each  {|k, v|
     k_int = k.to_i(16)

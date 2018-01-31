@@ -1,8 +1,6 @@
-EastAsianWidth.txt
 UTF-8
-UnicodeData.txt
-emoji-data.txt
 i18n
+*.txt
 *.c
 *.out
 
