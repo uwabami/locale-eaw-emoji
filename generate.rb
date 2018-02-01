@@ -10,18 +10,25 @@ output_EAW_amb = 'EastAsianAmbiguous.txt'
 output_EMOJI = 'EmojiData.txt'
 utf8_source = 'UTF-8'
 utf8_output = 'UTF-8-EAW-EMOJI-FULLWIDTH'
-eaw_and_emoji_elisp = 'locale-eaw-emoji.el'
+eaw_and_emoji_elisp = 'eaw_and_emoji.el'
 wcwidth_test_eaw = 'wcwidth_test_eaw.c'
 wcwidth_test_emoji = 'wcwidth_test_emoji.c'
 mlterm_main = 'mlterm_main_completion'
 mlterm_fonts = 'mlterm_aafont_completion'
 
+# COMBINING GRAVE ACCENT..COMBINING LATIN SMALL LETTER X
 $combining_charactor_range = "0300".to_i(16).."036F".to_i(16)
+# VARIATION_SELECTOR ONE...VARIATION_SELECTOR-THREE
 $variation_selector_range1 = "180B".to_i(16).."180D".to_i(16)
+# VARIATION SLECTOR-1..VARIATION_SELECTOR-16
 $variation_selector_range2 = "FE00".to_i(16).."FE0F".to_i(16)
+# VARIATION SLECTOR-17..VARIATION_SELECTOR-256
 $variation_selector_range3 = "E0100".to_i(16).."E01EF".to_i(16)
+# Private Use, First .. Private Use, Last
 $private_use_range1  = "E000".to_i(16).."F8FF".to_i(16)
+# Private Use, First .. Private Use, Last
 $private_use_range2  = "F0000".to_i(16).."FFFFD".to_i(16)
+# Private Use, First .. Private Use, Last
 $private_use_range3 = "100000".to_i(16).."10FFFD".to_i(16)
 
 def hex_rjust(hex)
@@ -54,7 +61,6 @@ File.open(unicode_source).each_line{|line|
     $unicode_table[data[0]] = data[1]
   end
 }
-
 def desc_grep(hex)
   @hex = hex_rjust(hex).upcase
   desc = $unicode_table[@hex]
@@ -78,7 +84,7 @@ end
 
 list_eaw = {}
 File.open(eaw_source).each_line {|line|
-  if line =~/^([a-fA-F\d\.]+);(\w)\s+#\s+(.*)/
+  if line =~/^([a-fA-F\d\.]+);(\w+)\s+#\s+(.*)/
     range = $1
     prop = $2
     desc = $3
@@ -101,19 +107,13 @@ File.open(eaw_source).each_line {|line|
 }
 list_emoji = {}
 File.open(emoji_source).each_line {|line|
-  if line =~/^([a-fA-F\d\.]+)\s+/
+  if line =~ /^([a-fA-F\d]+)\s+;.*#\s+(\d+.\d)\s(.+)/
     range = $1
-    if range =~/([a-fA-F\d]+)\.\.([a-fA-F\d]+)/
-      range_start = $1
-      range_end = $2
-      for i in range_start.to_i(16)..range_end.to_i(16)
-        list_emoji["#{hex_rjust(i.to_s(16).upcase)}"] = desc_grep("#{i.to_s(16)}")
-      end
-    else
-      list_emoji["#{hex_rjust(range).upcase}"] = desc_grep("#{range}")
-    end
+    ver = $2.to_f
+    list_emoji["#{range}"] = desc_grep(range)
   end
 }
+
 File.open(output_EAW_amb, 'w+'){|f|
   list_eaw.sort{|(k1,v1), (k2,v2)| k1.to_i(16) <=> k2.to_i(16)}.each  {|k, v|
     k_int = k.to_i(16)
@@ -193,7 +193,7 @@ EOS
 
 File.open(eaw_and_emoji_elisp, 'w+'){|f|
   f.puts <<-EOS
-;;; locale-eaw-emoji.el --- set UAX11 and Emoji as double width
+;;; eaw_and_emoji.el --- set UAX11 and Emoji as double width
 
 ;; Copyright (C) 2010-2016 Youhei SASAKI <uwabami@gfd-dennou.org>
 
@@ -260,9 +260,9 @@ EOS
   (setq nobreak-char-display nil)
   (eaw-and-emoji-set-width 2))
 
-(provide 'locale-eaw-emoji)
+(provide 'eaw_and_emoji)
 
-;;; locale-eaw-emoji.el ends here
+;;; eaw_and_emoji.el ends here
 EOS
 }
 

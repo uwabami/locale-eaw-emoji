@@ -1,16 +1,27 @@
-SOURCE_URL=http://sources.debian.net/data/main/g/glibc/2.26-6
-UNICODE_URI=$(SOURCE_URL)/localedata/unicode-gen/UnicodeData.txt
-EAW_URI=$(SOURCE_URL)/localedata/unicode-gen/EastAsianWidth.txt
+# clean target
+Downloaded_Files =
+# glibc sources
+GLIBC_VER=2.26-6
+SOURCE_URL=https://sources.debian.org/data/main/g/glibc/$(GLIBC_VER)
 I18N_URI=$(SOURCE_URL)/localedata/locales/i18n
+Downloaded_Files += i18n
 UTF8_URI=$(SOURCE_URL)/localedata/charmaps/UTF-8
-EMOJI_URI=http://unicode.org/Public/emoji/5.0/emoji-data.txt
+Downloaded_Files += UTF-8
+# Unicode org
+UNICODE_URI=https://www.unicode.org/Public/UNIDATA/UnicodeData.txt
+Downloaded_Files += UnicodeData.txt
+EAW_URI=https://www.unicode.org/Public/UNIDATA/EastAsianWidth.txt
+Downloaded_Files += EastAsianWidth.txt
+EMOJI_URI=https://unicode.org/Public/emoji/5.0/emoji-data.txt
+Downloaded_Files += emoji-data.txt
 
-Generated_Files  = UTF-8-EAW-EMOJI-FULLWIDTH UTF-8-EAW-EMOJI-FULLWIDTH.gz
-Generated_Files += EastAsianAmbiguous.txt EmojiData.txt
+Generated_Files  = UTF-8-EAW-EMOJI-FULLWIDTH
+Generated_Files += UTF-8-EAW-EMOJI-FULLWIDTH.gz
+Generated_Files += EastAsianAmbiguous.txt
+Generated_Files += EmojiData.txt
 Generated_Files += wcwidth_test_eaw.c
 Generated_Files += wcwidth_test_emoji.c
 Generated_Files += mlterm_main_completion
-Downloaded_Files = emoji-data.txt EastAsianWidth.txt UnicodeData.txt UTF-8 i18n
 
 all: $(Generated_Files) i18n wcwidth_test_eaw.out wcwidth_test_emoji.out
 
@@ -18,19 +29,19 @@ all: $(Generated_Files) i18n wcwidth_test_eaw.out wcwidth_test_emoji.out
 	gcc -Wall -Wextra $< -o $@
 
 emoji-data.txt:
-	wget -O $@ $(EMOJI_URI)
+	curl -o $@ $(EMOJI_URI)
 
 EastAsianWidth.txt:
-	wget -O $@ $(EAW_URI)
+	curl -o $@ $(EAW_URI)
 
 UnicodeData.txt:
-	wget -O $@ $(UNICODE_URI)
+	curl -o $@ $(UNICODE_URI)
 
 i18n:
-	wget -O $@ $(I18N_URI)
+	curl -o $@ $(I18N_URI)
 
 UTF-8:
-	wget -O $@ $(UTF8_URI)
+	curl -o $@ $(UTF8_URI)
 
 UTF-8-EAW-EMOJI-FULLWIDTH: UTF-8 EastAsianWidth.txt emoji-data.txt UnicodeData.txt
 	ruby generate.rb $(UNICODE_VER)
