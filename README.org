@@ -3,7 +3,7 @@
 unicode #UAX11 において文字幅が曖昧(A)，つまり文脈に依存して文字幅が半角幅だったり全角幅だったりする文字と，いわゆる絵文字(#UTR 51) について，強制的に文字幅を =2= ，つまり全角幅にするよう修正したロケールデータと，それを生成するための ruby script です．
 
 - [[EastAsianAmbiguous.txt][曖昧文字幅となっている文字の一覧]]
-- [[file:EmojiData.txt][絵文字のうち，Unicode 8.0 で定義されている文字の一覧]]
+- [[file:EmojiData.txt][絵文字のうち，Unicode 10.0 で定義されている文字の一覧]]
 
 使用に際しての責任は取りません/取れませんので，あらかじめご容赦下さい．
 
@@ -20,28 +20,68 @@ unicode #UAX11 において文字幅が曖昧(A)，つまり文脈に依存し�
 以下，Debian の場合です．ロケールデータの置き場所や更新方法はお使いの環境に合わせて適宜修正して下さい．
 
 1. make, ruby, wget を install して下さい
-2. git clone した後に =make= すると， =unicode.org= と =glibc2.26= から，必要なファイルを download した後， =UTF-8-EAW-EMOJI-FULLWIDTH.gz= と =eaw_and_emoji.el= が生成されます．
-3. ダウンロードされた =i18n= を =/usr/share/i18n/locales= 以下に copy します．
-4. 生成した =UTF-8-EAW-EMOJI-FULLWIDTH.gz= を =/usr/share/i18n/charmaps= に copy します．
-5. =/etc/locale.gen= 中の =ja_JP.UTF-8= の行を
+2. git clone した後に =make= すると， =unicode.org= から，必要なファイルを download した後， =UTF-8-EAW-EMOJI-FULLWIDTH.gz= と =locale-eaw-emoji.el= が生成されます．
+3. 生成した =UTF-8-EAW-EMOJI-FULLWIDTH.gz= を =/usr/share/i18n/charmaps= に copy します．
+4. =/etc/locale.gen= 中の =ja_JP.UTF-8= の行を
    #+BEGIN_SRC conf
-   en_US.UTF-8 UTF-8-EAW-EMOJI-FULLWIDTH
-   ja_JP.UTF-8 UTF-8-EAW-EMOJI-FULLWIDTH
+en_US.UTF-8 UTF-8-EAW-EMOJI-FULLWIDTH
+ja_JP.UTF-8 UTF-8-EAW-EMOJI-FULLWIDTH
    #+END_SRC
    に変更します．en_US.UTF-8 も変えているのは, tmux の文字幅判定が en_US.UTF-8 決め打ちだから, です.
-6. =locale-gen= を唱えます．
-7. emacs の =load-path= が通った所に =eaw_and_emoji.el= を copy して，
+5. =locale-gen= を唱えます．
+6. emacs の =load-path= が通った所に =locale-eaw-emoji.el= を copy して，
    #+BEGIN_SRC emacs-lisp
-   (require 'eaw_and_emoji)
+(require 'locale-eaw-emoji)
    #+END_SRC
    として下さい．
-8. mlterm 用での表示用に [[file:mlterm_main_completioin][mlterm_main_completion]] ファイルを用意してあります．
+7. mlterm 用での表示用に [[file:mlterm_main_completioin][mlterm_main_completion]] ファイルを用意してあります．
    =~/.mltem/main= にコピーしてお使い下さい．
-   =aafont= の completion も用意した方が良いのかもしれません．
 * ライセンス
 
-  - MIT/X11: generate.rb
-  - ロケールデータそのものは Unicode, Inc. から取得しています. また, 生成に使ったデータ(i18n, UTF-8)は glibc 由来です．
+#+BEGIN_EXAMPLE
+Files: *
+Copyright: 2015-2017 Youhei SASAKI <uwabami@gfd-dennou.org>
+License: MIT
+
+Files: unicode_utils.py utf8_gen.py
+Copyright (C) 2014-2018 Free Software Foundation, Inc.
+License: LGPL-2.1
+
+License: MIT
+ Permission is hereby granted, free of charge, to any person obtaining a
+ copy of this software and associated documentation files (the "Software"),
+ to deal in the Software without restriction, including without limitation
+ the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ and/or sell copies of the Software, and to permit persons to whom the
+ Software is furnished to do so, subject to the following conditions:
+ .
+ The above copyright notice and this permission notice shall be included
+ in all copies or substantial portions of the Software.
+ .
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+License: LGPL-2.1+
+ This package is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation; either
+ version 2 of the License, or (at your option) any later version.
+ .
+ This package is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+ .
+ You should have received a copy of the GNU Lesser General Public License
+ along with this program. If not, see <https://www.gnu.org/licenses/>.
+ .
+ See LGPL-2.1.txt
+#+END_EXAMPLE
 
 * 参考文献
 

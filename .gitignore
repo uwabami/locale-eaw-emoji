@@ -3,4 +3,5 @@ i18n
 *.txt
 *.c
 *.out
+__py*
 

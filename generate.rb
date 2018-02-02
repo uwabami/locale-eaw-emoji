@@ -3,18 +3,20 @@
 
 require 'pp'
 
+# define sources
 eaw_source = 'EastAsianWidth.txt'
-emoji_source = 'emoji-data.txt'
+emoji_source = 'EmojiSources.txt'
 unicode_source = 'UnicodeData.txt'
+nameslist_source = 'NamesList.txt'
+utf8_source = 'UTF-8'
+
+# define output
 output_EAW_amb = 'EastAsianAmbiguous.txt'
 output_EMOJI = 'EmojiData.txt'
-utf8_source = 'UTF-8'
-utf8_output = 'UTF-8-EAW-EMOJI-FULLWIDTH'
-eaw_and_emoji_elisp = 'locale-eaw-emoji.el'
 wcwidth_test_eaw = 'wcwidth_test_eaw.c'
 wcwidth_test_emoji = 'wcwidth_test_emoji.c'
-mlterm_main = 'mlterm_main_completion'
-mlterm_fonts = 'mlterm_aafont_completion'
+utf8_output = 'UTF-8-EAW-EMOJI-FULLWIDTH'
+eaw_and_emoji_elisp = 'locale-eaw-emoji.el'
 
 # COMBINING GRAVE ACCENT..COMBINING LATIN SMALL LETTER X
 $combining_charactor_range = "0300".to_i(16).."036F".to_i(16)
@@ -30,6 +32,21 @@ $private_use_range1  = "E000".to_i(16).."F8FF".to_i(16)
 $private_use_range2  = "F0000".to_i(16).."FFFFD".to_i(16)
 # Private Use, First .. Private Use, Last
 $private_use_range3 = "100000".to_i(16).."10FFFD".to_i(16)
+# Exclude SQUARED THREE D..SQUARED VOD
+$exclude_range = "1F19B".to_i(16).."1F1AC".to_i(16)
+
+def check_unused_range(hex)
+  @hex = hex
+  return true if $combining_charactor_range.cover?(@hex.to_i(16))
+  return true if $variation_selector_range1.cover?(@hex.to_i(16))
+  return true if $variation_selector_range2.cover?(@hex.to_i(16))
+  return true if $variation_selector_range3.cover?(@hex.to_i(16))
+  return true if $private_use_range1.cover?(@hex.to_i(16))
+  return true if $private_use_range2.cover?(@hex.to_i(16))
+  return true if $private_use_range3.cover?(@hex.to_i(16))
+  return true if $exclude_range.cover?(@hex.to_i(16))
+  return false
+end
 
 def hex_rjust(hex)
   @hex = hex
@@ -42,80 +59,76 @@ def hex_rjust(hex)
   end
 end
 
-def check_unused_range(hex)
-  @hex = hex
-  return true if $combining_charactor_range.cover?(@hex.to_i(16))
-  return true if $variation_selector_range1.cover?(@hex.to_i(16))
-  return true if $variation_selector_range2.cover?(@hex.to_i(16))
-  return true if $variation_selector_range3.cover?(@hex.to_i(16))
-  return true if $private_use_range1.cover?(@hex.to_i(16))
-  return true if $private_use_range2.cover?(@hex.to_i(16))
-  return true if $private_use_range3.cover?(@hex.to_i(16))
-  return false
-end
-
-$unicode_table = {}
-File.open(unicode_source).each_line{|line|
-  data = line.split(';')
-  unless check_unused_range data[0]
-    $unicode_table[data[0]] = data[1]
-  end
-}
 def desc_grep(hex)
   @hex = hex_rjust(hex).upcase
   desc = $unicode_table[@hex]
   return desc
 end
 
-def nums2str_range(str)
-  @str = str
-  @nums = @str.split(' ').map{|s| s.to_i }.uniq.sort
-  @nums.inject([[@nums.shift]]){|r, s|
-    if r.last.last.succ == s
-      r.last << s
-    else
-      r << [s]
-    end
-    r
-  }.map {|i|
-    i.size > 1 ? ["U+"+i.first.to_s(16).upcase, i.last.to_s(16).upcase].join('-') : "U+" + i.first.to_s(16).upcase
-  }.join(",")
-end
 
-list_eaw = {}
+# def nums2str_range(str)
+#   @str = str
+#   @nums = @str.split(' ').map{|s| s.to_i }.uniq.sort
+#   @nums.inject([[@nums.shift]]){|r, s|
+#     if r.last.last.succ == s
+#       r.last << s
+#     else
+#       r << [s]
+#     end
+#     r
+#   }.map {|i|
+#     i.size > 1 ? ["U+"+i.first.to_s(16).upcase, i.last.to_s(16).upcase].join('-') : "U+" + i.first.to_s(16).upcase
+#   }.join(",")
+# end
+
+$unicode_table = {}
+File.open(nameslist_source).each_line{|line|
+  if line =~/^\d/
+    data = line.chomp.split("\t")
+    unless check_unused_range data[0]
+      $unicode_table[data[0]] = data[1]
+    end
+  end
+}
+
+$list_eaw = {}
 File.open(eaw_source).each_line {|line|
-  if line =~/^([a-fA-F\d\.]+);(\w+)\s+#\s+(.*)/
+  if line =~/^([a-fA-F\d\.]+);(\w+)\s+#\s+.*/
     range = $1
     prop = $2
-    desc = $3
-    if prop == 'A' or prop =='Na'
+    if prop == 'A'
       if range =~/([a-fA-F\d]+)\.\.([a-fA-F\d]+)/
         range_start = $1
         range_end = $2
         unless check_unused_range range_start
           for i in range_start.to_i(16)..range_end.to_i(16)
-            list_eaw["#{hex_rjust(i.to_s(16).upcase)}"] = desc_grep("#{i.to_s(16)}")
+            $list_eaw["#{hex_rjust(i.to_s(16).upcase)}"] = desc_grep("#{i.to_s(16)}")
           end
         end
       else
         unless check_unused_range range
-          list_eaw["#{hex_rjust(range).upcase}"] = desc_grep("#{range}")
+          $list_eaw["#{hex_rjust(range).upcase}"] = desc_grep("#{range}")
         end
       end
     end
   end
 }
-list_emoji = {}
+
+$list_emoji = {}
 File.open(emoji_source).each_line {|line|
-  if line =~ /^([a-fA-F\d]+)\s+;.*#\s+(\d+.\d)\s(.+)/
+  if line =~ /^([a-fA-F\d]+);.*/
     range = $1
-    ver = $2.to_f
-    list_emoji["#{range}"] = desc_grep(range)
+    $list_emoji["#{range}"] = desc_grep(range)
   end
 }
+for i in 0x1f000..0x1fffd
+  unless $list_emoji["#{i.to_s(16).upcase}"]
+    $list_emoji["#{i.to_s(16).upcase}"] = desc_grep(i.to_s(16).upcase)
+  end
+end
 
 File.open(output_EAW_amb, 'w+'){|f|
-  list_eaw.sort{|(k1,v1), (k2,v2)| k1.to_i(16) <=> k2.to_i(16)}.each  {|k, v|
+  $list_eaw.sort{|(k1,v1), (k2,v2)| k1.to_i(16) <=> k2.to_i(16)}.each  {|k, v|
     k_int = k.to_i(16)
     if k_int <= "0xffff".to_i(16)
       f.puts sprintf("[%c] U+%04X %s", k_int, k_int, v)
@@ -126,7 +139,7 @@ File.open(output_EAW_amb, 'w+'){|f|
 }
 
 File.open(output_EMOJI, 'w+'){|f|
-  list_emoji.sort{|(k1,v1), (k2,v2)| k1.to_i(16) <=> k2.to_i(16)}.each {|k, v|
+  $list_emoji.sort{|(k1,v1), (k2,v2)| k1.to_i(16) <=> k2.to_i(16)}.each {|k, v|
     k_int = k.to_i(16)
     if k_int <= "0xffff".to_i(16)
       f.puts sprintf("[%c] U+%04X %s", k_int, k_int, v)
@@ -137,9 +150,9 @@ File.open(output_EMOJI, 'w+'){|f|
 }
 
 # remove EMOJI from EAW, duplicates
-list_emoji.each {|k, v|
-  if list_eaw[k]
-    list_eaw.delete(k)
+$list_emoji.each {|k, v|
+  if $list_eaw[k]
+    $list_eaw.delete(k)
   end
 }
 
@@ -158,8 +171,8 @@ int main()
 {
   setlocale(LC_CTYPE, "");
 EOS
-  list_eaw.each {|k, v|
-    f.puts "  print_wcwidth(0x" + k.to_i(16).to_s(16) + ", \"#{v}\");"
+  $list_eaw.each {|k, v|
+    f.puts "  print_wcwidth(0x" + k.to_i(16).to_s(16) + ", \"#{v}\");" unless v.nil?
   }
   f.puts <<-EOS
   return 0;
@@ -182,8 +195,8 @@ int main()
 {
   setlocale(LC_CTYPE, "");
 EOS
-  list_emoji.each {|k, v|
-    f.puts "  print_wcwidth(0x" + k.to_i(16).to_s(16) + ", \"#{v}\");"
+  $list_emoji.each {|k, v|
+    f.puts "  print_wcwidth(0x" + k.to_i(16).to_s(16) + ", \"#{v}\");" unless v.nil?
   }
   f.puts <<-EOS
   return 0;
@@ -236,11 +249,11 @@ File.open(eaw_and_emoji_elisp, 'w+'){|f|
 
 EOS
   f.puts "(setq east-asian-ambiguous-and-emoji\n      '("
-  list_eaw.each {|k, v|
-    f.puts sprintf("        #x%s ; %s", k, v)
+  $list_eaw.each {|k, v|
+    f.puts sprintf("        #x%s ; %s", k, v) unless v.nil?
   }
-  list_emoji.each {|k, v|
-    f.puts sprintf("        #x%s ; %s", k, v)
+  $list_emoji.each {|k, v|
+    f.puts sprintf("        #x%s ; %s", k, v) unless v.nil?
   }
   f.puts '        ))'
   f.puts <<-EOS
@@ -266,53 +279,19 @@ EOS
 EOS
 }
 
-list = list_eaw.merge(list_emoji).sort{|(k1,v1), (k2,v2)| k1.to_i(16) <=> k2.to_i(16)}
+list = $list_eaw.merge($list_emoji).sort{|(k1,v1), (k2,v2)| k1.to_i(16) <=> k2.to_i(16)}
 File.open(utf8_output, 'w+'){|f|
   f.puts File.readlines(utf8_source)[0..-2]
   f.puts "% Add East Asian Ambiguous Width and Emoji as fullwidth"
   list.each {|k, v|
     k_int = k.to_i(16)
-    if k_int <= "0xffff".to_i(16)
-      f.puts sprintf("<U%04X> 2 %% %s", k_int, v)
-    else
-      f.puts sprintf("<U%08X> 2 %% %s", k_int, v)
+    unless v.nil?
+      if k_int <= "0xffff".to_i(16)
+        f.puts sprintf("<U%04X> 2 %% %s", k_int, v)
+      else
+        f.puts sprintf("<U%08X> 2 %% %s", k_int, v)
+      end
     end
   }
   f.puts "END WIDTH"
 }
-
-list.sort{|(k1,v1), (k2,v2)| k1.to_i(16) <=> k2.to_i(16)}.each  {|k, v|
-  k_int = k.to_i(16)
-  if k_int <= "0xffff".to_i(16)
-    puts sprintf("[%c] U+%04X %s", k_int, k_int, v)
-  else
-    puts sprintf("[%c] U+%08X %s", k_int, k_int, v)
-  end
-}
-
-str = ''
-list_eaw.each {|k, v|
-  str += "#{k.to_i(16)} "
-}
-list_emoji.each {|k, v|
-  str += "#{k.to_i(16)} "
-}
-str = str.split(' ').sort{|a, b| a.to_i <=> b.to_i}.join(' ')
-File.open(mlterm_main, 'w+'){|f|
-  f.puts <<-EOS
-# not_use_unicode_font を true とした場合でも、このオプションで指定した
-# 範囲の文字は、常に UNICODE のまま表示する。
-EOS
-  f.puts "unicode_noconv_areas = #{nums2str_range(str)}"
-  f.puts <<-EOS
-# EastAsianWidth.txt に関わらず、このオプションで指定した範囲の文字は
-# 常に全角幅とする。範囲の指定方法は、unicode_noconv_areas オプション参照。
-EOS
-  f.puts "unicode_full_width_areas = #{nums2str_range(str)}"
-}
-# File.open(mlterm_fonts, 'w+'){|f|
-#   f.puts "# EAW range"
-#   nums2str_range(str_emoji).split(',').each do |r|
-#     f.puts "#{r} = Symbola;"
-#   end
-# }

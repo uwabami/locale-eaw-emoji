@@ -1,49 +1,41 @@
-# clean target
-Downloaded_Files =
-# glibc sources
-GLIBC_VER=2.26-6
-SOURCE_URL=https://sources.debian.org/data/main/g/glibc/$(GLIBC_VER)
-I18N_URI=$(SOURCE_URL)/localedata/locales/i18n
-Downloaded_Files += i18n
-UTF8_URI=$(SOURCE_URL)/localedata/charmaps/UTF-8
-Downloaded_Files += UTF-8
 # Unicode org
-UNICODE_URI=https://www.unicode.org/Public/UNIDATA/UnicodeData.txt
-Downloaded_Files += UnicodeData.txt
-EAW_URI=https://www.unicode.org/Public/UNIDATA/EastAsianWidth.txt
+UNICODE_VER=10.0.0
+UNICODE_URI=http://www.unicode.org/Public/$(UNICODE_VER)/ucd
+Downloaded_Files  = UnicodeData.txt
+Downloaded_Files += PropList.txt
 Downloaded_Files += EastAsianWidth.txt
-EMOJI_URI=https://unicode.org/Public/emoji/5.0/emoji-data.txt
-Downloaded_Files += emoji-data.txt
-
-Generated_Files  = UTF-8-EAW-EMOJI-FULLWIDTH
+Downloaded_Files += EmojiSources.txt
+Downloaded_Files += NamesList.txt
+Generated_Files  = UTF-8
+Generated_Files += UTF-8-EAW-EMOJI-FULLWIDTH
 Generated_Files += UTF-8-EAW-EMOJI-FULLWIDTH.gz
 Generated_Files += EastAsianAmbiguous.txt
 Generated_Files += EmojiData.txt
 Generated_Files += wcwidth_test_eaw.c
+Generated_Files += wcwidth_test_eaw.out
 Generated_Files += wcwidth_test_emoji.c
-Generated_Files += mlterm_main_completion
+Generated_Files += wcwidth_test_emoji.out
 
-all: $(Generated_Files) i18n wcwidth_test_eaw.out wcwidth_test_emoji.out
+all: $(Generated_Files)
+
+UnicodeData.txt:
+	wget -O $@ $(UNICODE_URI)/$@
+PropList.txt:
+	wget -O $@ $(UNICODE_URI)/$@
+EastAsianWidth.txt:
+	wget -O $@ $(UNICODE_URI)/$@
+EmojiSources.txt:
+	wget -O $@ $(UNICODE_URI)/$@
+NamesList.txt:
+	wget -O $@ $(UNICODE_URI)/$@
 
 %.out: %.c
 	gcc -Wall -Wextra $< -o $@
 
-emoji-data.txt:
-	curl -o $@ $(EMOJI_URI)
+UTF-8: UnicodeData.txt PropList.txt EastAsianWidth.txt
+	python3 ./utf8_gen.py UnicodeData.txt EastAsianWidth.txt PropList.txt
 
-EastAsianWidth.txt:
-	curl -o $@ $(EAW_URI)
-
-UnicodeData.txt:
-	curl -o $@ $(UNICODE_URI)
-
-i18n:
-	curl -o $@ $(I18N_URI)
-
-UTF-8:
-	curl -o $@ $(UTF8_URI)
-
-UTF-8-EAW-EMOJI-FULLWIDTH: UTF-8 EastAsianWidth.txt emoji-data.txt UnicodeData.txt
+UTF-8-EAW-EMOJI-FULLWIDTH: UTF-8 NamesList.txt EmojiSources.txt
 	ruby generate.rb $(UNICODE_VER)
 
 UTF-8-EAW-EMOJI-FULLWIDTH.gz: UTF-8-EAW-EMOJI-FULLWIDTH
@@ -52,8 +44,7 @@ UTF-8-EAW-EMOJI-FULLWIDTH.gz: UTF-8-EAW-EMOJI-FULLWIDTH
 wcwidth_test_eaw.c: UTF-8-EAW-EMOJI-FULLWIDTH
 wcwidth_test_emoji.c: UTF-8-EAW-EMOJI-FULLWIDTH
 
-distclean: clean
-	-rm -rf $(Generated_Files)
-
 clean:
 	-rm -rf $(Downloaded_Files) *.out
+distclean: clean
+	-rm -rf $(Generated_Files) __pycache__
