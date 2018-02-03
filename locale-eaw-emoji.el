@@ -1,12 +1,12 @@
-;;; eaw_and_emoji.el --- set UAX11 and Emoji as double width
+;;; locale-eaw-emoji.el --- set UAX11 and Emoji as double width
 
 ;; Copyright (C) 2010-2016 Youhei SASAKI <uwabami@gfd-dennou.org>
 
 ;; Author: Youhei SASAKI <uwabami@gfd-dennou.org>
 ;; Created: 2015-12-10 08:09:00 +0900
-;; Updated: 2018-02-03 09:00:43 +0900
+;; Updated: 2018-02-03 09:07:20 +0900
 ;; Version: 0.0.1
-;; Package-Version: 20180203.090043
+;; Package-Version: 20180203.090720
 ;; Package-Requires: nil
 ;; Keywords: tools
 ;; URL: https://github.com/uwabami/locale-eaw-emoji
@@ -2877,6 +2877,6 @@
   (setq nobreak-char-display nil)
   (eaw-and-emoji-set-width 2))
 
-(provide 'eaw_and_emoji)
+(provide 'locale-eaw-emoji)
 
-;;; eaw_and_emoji.el ends here
+;;; locale-eaw-emoji.el ends here
