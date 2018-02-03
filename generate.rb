@@ -141,10 +141,12 @@ File.open(output_EAW_amb, 'w+'){|f|
 File.open(output_EMOJI, 'w+'){|f|
   $list_emoji.sort{|(k1,v1), (k2,v2)| k1.to_i(16) <=> k2.to_i(16)}.each {|k, v|
     k_int = k.to_i(16)
-    if k_int <= "0xffff".to_i(16)
-      f.puts sprintf("[%c] U+%04X %s", k_int, k_int, v)
-    else
-      f.puts sprintf("[%c] U+%08X %s", k_int, k_int, v)
+    unless v.nil?
+      if k_int <= "0xffff".to_i(16)
+        f.puts sprintf("[%c] U+%04X %s", k_int, k_int, v)
+      else
+        f.puts sprintf("[%c] U+%08X %s", k_int, k_int, v)
+      end
     end
   }
 }

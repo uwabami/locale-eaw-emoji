@@ -34,8 +34,7 @@ ja_JP.UTF-8 UTF-8-EAW-EMOJI-FULLWIDTH
 (require 'locale-eaw-emoji)
    #+END_SRC
    として下さい．
-7. mlterm 用での表示用に [[file:mlterm_main_completioin][mlterm_main_completion]] ファイルを用意してあります．
-   =~/.mltem/main= にコピーしてお使い下さい．
+
 * ライセンス
 
 #+BEGIN_EXAMPLE
