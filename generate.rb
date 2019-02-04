@@ -1,50 +1,51 @@
 #!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
-
-require 'pp'
-
 # define sources
 eaw_source = 'EastAsianWidth.txt'
 emoji_source = 'EmojiSources.txt'
-unicode_source = 'UnicodeData.txt'
 nameslist_source = 'NamesList.txt'
 utf8_source = 'UTF-8'
+icons_in_terminal_source = 'icons-in-terminal-mapping.txt'
 
 # define output
-output_EAW_amb = 'EastAsianAmbiguous.txt'
-output_EMOJI = 'EmojiData.txt'
+output_eaw_amb = 'EastAsianAmbiguous.txt'
+output_emoji = 'EmojiData.txt'
 wcwidth_test_eaw = 'wcwidth_test_eaw.c'
 wcwidth_test_emoji = 'wcwidth_test_emoji.c'
+wcwidth_test_icons = 'wcwidth_test_icons.c'
 utf8_output = 'UTF-8-EAW-EMOJI-FULLWIDTH'
 eaw_and_emoji_elisp = 'locale-eaw-emoji.el'
 
 # COMBINING GRAVE ACCENT..COMBINING LATIN SMALL LETTER X
-$combining_charactor_range = "0300".to_i(16).."036F".to_i(16)
-# VARIATION_SELECTOR ONE...VARIATION_SELECTOR-THREE
-$variation_selector_range1 = "180B".to_i(16).."180D".to_i(16)
+$combining_charactor_range = '0300'.to_i(16)..'036F'.to_i(16)
+# MONGORIAN FREE VARIATION_SELECTOR ONE... THREE
+$variation_selector_range1 = '180B'.to_i(16)..'180D'.to_i(16)
 # VARIATION SLECTOR-1..VARIATION_SELECTOR-16
-$variation_selector_range2 = "FE00".to_i(16).."FE0F".to_i(16)
+$variation_selector_range2 = 'FE00'.to_i(16)..'FE0F'.to_i(16)
 # VARIATION SLECTOR-17..VARIATION_SELECTOR-256
-$variation_selector_range3 = "E0100".to_i(16).."E01EF".to_i(16)
+$variation_selector_range3 = 'E0100'.to_i(16)..'E01EF'.to_i(16)
 # Private Use, First .. Private Use, Last
-$private_use_range1  = "E000".to_i(16).."F8FF".to_i(16)
+$private_use_range1  = 'E000'.to_i(16)..'F8FF'.to_i(16)
 # Private Use, First .. Private Use, Last
-$private_use_range2  = "F0000".to_i(16).."FFFFD".to_i(16)
+$private_use_range2  = 'F0000'.to_i(16)..'FFFFD'.to_i(16)
 # Private Use, First .. Private Use, Last
-$private_use_range3 = "100000".to_i(16).."10FFFD".to_i(16)
+$private_use_range3 = '100000'.to_i(16)..'10FFFD'.to_i(16)
 # Exclude SQUARED THREE D..SQUARED VOD
-$exclude_range = "1F19B".to_i(16).."1F1AC".to_i(16)
+$exclude_range = '1F19B'.to_i(16)..'1F1AC'.to_i(16)
+# icons-in-terminal range
+$icon_in_terminal_range = 'E0A0'.to_i(16)..'EEA0'.to_i(16)
 
 def check_unused_range(hex)
   @hex = hex
-  return true if $combining_charactor_range.cover?(@hex.to_i(16))
-  return true if $variation_selector_range1.cover?(@hex.to_i(16))
-  return true if $variation_selector_range2.cover?(@hex.to_i(16))
-  return true if $variation_selector_range3.cover?(@hex.to_i(16))
-  return true if $private_use_range1.cover?(@hex.to_i(16))
-  return true if $private_use_range2.cover?(@hex.to_i(16))
-  return true if $private_use_range3.cover?(@hex.to_i(16))
-  return true if $exclude_range.cover?(@hex.to_i(16))
+  return true  if $combining_charactor_range.cover?(@hex.to_i(16))
+  return true  if $variation_selector_range1.cover?(@hex.to_i(16))
+  return true  if $variation_selector_range2.cover?(@hex.to_i(16))
+  return true  if $variation_selector_range3.cover?(@hex.to_i(16))
+  return false if $icon_in_terminal_range.cover?(@hex.to_i(16))
+  return true  if $private_use_range1.cover?(@hex.to_i(16))
+  return true  if $private_use_range2.cover?(@hex.to_i(16))
+  return true  if $private_use_range3.cover?(@hex.to_i(16))
+  return true  if $exclude_range.cover?(@hex.to_i(16))
   return false
 end
 
@@ -64,22 +65,6 @@ def desc_grep(hex)
   desc = $unicode_table[@hex]
   return desc
 end
-
-
-# def nums2str_range(str)
-#   @str = str
-#   @nums = @str.split(' ').map{|s| s.to_i }.uniq.sort
-#   @nums.inject([[@nums.shift]]){|r, s|
-#     if r.last.last.succ == s
-#       r.last << s
-#     else
-#       r << [s]
-#     end
-#     r
-#   }.map {|i|
-#     i.size > 1 ? ["U+"+i.first.to_s(16).upcase, i.last.to_s(16).upcase].join('-') : "U+" + i.first.to_s(16).upcase
-#   }.join(",")
-# end
 
 $unicode_table = {}
 File.open(nameslist_source).each_line{|line|
@@ -121,13 +106,22 @@ File.open(emoji_source).each_line {|line|
     $list_emoji["#{range}"] = desc_grep(range)
   end
 }
+
+$list_icon = {}
+File.open(icons_in_terminal_source).each_line {|line|
+  if line =~ /^(\S+)\s+:(.+)/
+    range = $2
+    $list_icon["#{range}"] = $1
+  end
+}
+
 for i in 0x1f000..0x1fffd
   unless $list_emoji["#{i.to_s(16).upcase}"]
     $list_emoji["#{i.to_s(16).upcase}"] = desc_grep(i.to_s(16).upcase)
   end
 end
 
-File.open(output_EAW_amb, 'w+'){|f|
+File.open(output_eaw_amb, 'w+'){|f|
   $list_eaw.sort{|(k1,v1), (k2,v2)| k1.to_i(16) <=> k2.to_i(16)}.each  {|k, v|
     k_int = k.to_i(16)
     if k_int <= "0xffff".to_i(16)
@@ -138,7 +132,7 @@ File.open(output_EAW_amb, 'w+'){|f|
   }
 }
 
-File.open(output_EMOJI, 'w+'){|f|
+File.open(output_emoji, 'w+'){|f|
   $list_emoji.sort{|(k1,v1), (k2,v2)| k1.to_i(16) <=> k2.to_i(16)}.each {|k, v|
     k_int = k.to_i(16)
     unless v.nil?
@@ -206,6 +200,31 @@ EOS
 EOS
 }
 
+File.open(wcwidth_test_icons, 'w+'){|f|
+  f.puts <<-EOS
+#define _XOPEN_SOURCE
+#include <stdio.h>
+#include <locale.h>
+#include <wchar.h>
+
+void print_wcwidth(wchar_t c, char *str)
+{
+  printf("wcwidth('[%lc]') == %d, codepoint [%x], %s\\n", c, wcwidth(c), c, str);
+}
+int main()
+{
+  setlocale(LC_CTYPE, "");
+EOS
+  $list_icon.each {|k, v|
+    f.puts "  print_wcwidth(0x" + k.to_i(16).to_s(16) + ", \"#{v}\");" unless v.nil?
+  }
+  f.puts <<-EOS
+  return 0;
+}
+EOS
+}
+
+
 File.open(eaw_and_emoji_elisp, 'w+'){|f|
   f.puts <<-EOS
 ;;; locale-eaw-emoji.el --- set UAX11 and Emoji as double width
@@ -220,7 +239,7 @@ File.open(eaw_and_emoji_elisp, 'w+'){|f|
 ;; Package-Requires: nil
 ;; Keywords: tools
 ;; URL: https://github.com/uwabami/locale-eaw-emoji
-
+;;
 ;; This file is not part of GNU Emacs.
 ;;
 ;; License:
@@ -242,25 +261,29 @@ File.open(eaw_and_emoji_elisp, 'w+'){|f|
 ;; CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 ;; TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 ;; SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-;;; Commentry:
-
-;; This file is auto-generated file. Please sea `generate.rb' in this repos.
-
+;;
+;;; Commentary:
+;;
+;; This file is auto-generated file, please sea `generate.rb' in this repos.
+;;
 ;;; Code:
 
 EOS
-  f.puts "(setq east-asian-ambiguous-and-emoji\n      '("
+  f.puts "(setq east-asian-ambiguous-and-emoji\n  '("
   $list_eaw.each {|k, v|
-    f.puts sprintf("        #x%s ; %s", k, v) unless v.nil?
+    f.puts sprintf("    #x%s ; %s", k, v) unless v.nil?
   }
   $list_emoji.each {|k, v|
-    f.puts sprintf("        #x%s ; %s", k, v) unless v.nil?
+    f.puts sprintf("    #x%s ; %s", k, v) unless v.nil?
   }
-  f.puts '        ))'
+  $list_icon.each {|k, v|
+    f.puts sprintf("    #x%s ; %s", k, v) unless v.nil?
+  }
+  f.puts '        ))\n'
   f.puts <<-EOS
 ;;;###autoload
 (defun eaw-and-emoji-set-width (width)
+  "Set character width in east-asian-ambiguous-and-emoji as `WIDTH'."
   (while (char-table-parent char-width-table)
     (setq char-width-table (char-table-parent char-width-table)))
   (let ((table (make-char-table nil)))
@@ -272,6 +295,7 @@ EOS
 
 ;;;###autoload
 (defun eaw-and-emoji-fullwidth ()
+  "Just shortcut of (eaw-and-emoji-set-width 2)."
   (setq nobreak-char-display nil)
   (eaw-and-emoji-set-width 2))
 
@@ -281,7 +305,7 @@ EOS
 EOS
 }
 
-list = $list_eaw.merge($list_emoji).sort{|(k1,v1), (k2,v2)| k1.to_i(16) <=> k2.to_i(16)}
+list = $list_eaw.merge($list_emoji).merge($list_icon).sort{|(k1,v1), (k2,v2)| k1.to_i(16) <=> k2.to_i(16)}
 File.open(utf8_output, 'w+'){|f|
   f.puts File.readlines(utf8_source)[0..-2]
   f.puts "% Add East Asian Ambiguous Width and Emoji as fullwidth"

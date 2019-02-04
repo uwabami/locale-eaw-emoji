@@ -15,6 +15,9 @@ Generated_Files += wcwidth_test_eaw.c
 Generated_Files += wcwidth_test_eaw.out
 Generated_Files += wcwidth_test_emoji.c
 Generated_Files += wcwidth_test_emoji.out
+Generated_Files += wcwidth_test_icons.c
+Generated_Files += wcwidth_test_icons.out
+Generated_Files += locale-eaw-emoji.el
 
 all: $(Generated_Files)
 
@@ -41,11 +44,15 @@ UTF-8: UnicodeData.txt PropList.txt EastAsianWidth.txt
 UTF-8-EAW-EMOJI-FULLWIDTH: UTF-8 NamesList.txt EmojiSources.txt
 	ruby generate.rb $(UNICODE_VER)
 
+locale-eaw-emoji.el: UTF-8-EAW-EMOJI-FULLWIDTH.gz
+	@ruby generate.rb $(UNICODE_VER)
+
 UTF-8-EAW-EMOJI-FULLWIDTH.gz: UTF-8-EAW-EMOJI-FULLWIDTH
 	gzip -n -9 -c $^ > $@
 
-wcwidth_test_eaw.c: UTF-8-EAW-EMOJI-FULLWIDTH
-wcwidth_test_emoji.c: UTF-8-EAW-EMOJI-FULLWIDTH
+wcwidth_test_eaw.c: UTF-8-EAW-EMOJI-FULLWIDTH.gz
+wcwidth_test_emoji.c: UTF-8-EAW-EMOJI-FULLWIDTH.gz
+wcwidth_test_icons.c: UTF-8-EAW-EMOJI-FULLWIDTH.gz
 
 clean:
 	-rm -rf $(Downloaded_Files) *.out
