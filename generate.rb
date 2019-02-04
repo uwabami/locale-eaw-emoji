@@ -279,7 +279,7 @@ EOS
   $list_icon.each {|k, v|
     f.puts sprintf("    #x%s ; %s", k, v) unless v.nil?
   }
-  f.puts '        ))\n'
+  f.puts "        ))\n"
   f.puts <<-EOS
 ;;;###autoload
 (defun eaw-and-emoji-set-width (width)

@@ -4,9 +4,9 @@
 
 ;; Author: Youhei SASAKI <uwabami@gfd-dennou.org>
 ;; Created: 2015-12-10 08:09:00 +0900
-;; Updated: 2019-02-04 21:33:56 +0900
+;; Updated: 2019-02-04 21:38:23 +0900
 ;; Version: 0.0.1
-;; Package-Version: 20190204.213356
+;; Package-Version: 20190204.213823
 ;; Package-Requires: nil
 ;; Keywords: tools
 ;; URL: https://github.com/uwabami/locale-eaw-emoji
@@ -6675,7 +6675,7 @@
     #xEE9E ; FIRACODE_PLUS_LC
     #xEE9F ; FIRACODE_PLUS_TOSF2
     #xEEA0 ; FIRACODE_NAMEME_1114119
-        ))\n
+        ))
 ;;;###autoload
 (defun eaw-and-emoji-set-width (width)
   "Set character width in east-asian-ambiguous-and-emoji as `WIDTH'."
