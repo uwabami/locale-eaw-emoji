@@ -1,5 +1,5 @@
 # Unicode org
-UNICODE_VER=10.0.0
+UNICODE_VER=11.0.0
 UNICODE_URI=http://www.unicode.org/Public/$(UNICODE_VER)/ucd
 Downloaded_Files  = UnicodeData.txt
 Downloaded_Files += PropList.txt
@@ -33,7 +33,10 @@ NamesList.txt:
 	gcc -Wall -Wextra $< -o $@
 
 UTF-8: UnicodeData.txt PropList.txt EastAsianWidth.txt
-	python3 ./utf8_gen.py UnicodeData.txt EastAsianWidth.txt PropList.txt
+	python3 ./utf8_gen.py \
+		-u UnicodeData.txt \
+		-e EastAsianWidth.txt \
+		-p PropList.txt --unicode_version $(UNICODE_VER)
 
 UTF-8-EAW-EMOJI-FULLWIDTH: UTF-8 NamesList.txt EmojiSources.txt
 	ruby generate.rb $(UNICODE_VER)
