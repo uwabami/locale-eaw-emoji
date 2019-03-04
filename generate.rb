@@ -32,8 +32,8 @@ $private_use_range2  = 'F0000'.to_i(16)..'FFFFD'.to_i(16)
 $private_use_range3 = '100000'.to_i(16)..'10FFFD'.to_i(16)
 # Exclude SQUARED THREE D..SQUARED VOD
 $exclude_range = '1F19B'.to_i(16)..'1F1AC'.to_i(16)
-# icons-in-terminal range
-$icon_in_terminal_range = 'E0A0'.to_i(16)..'EEA0'.to_i(16)
+ # icons-in-terminal range
+$icon_in_terminal_range = 'E0A0'.to_i(16)..'EEE0'.to_i(16)
 
 def check_unused_range(hex)
   @hex = hex
@@ -52,11 +52,11 @@ end
 def hex_rjust(hex)
   @hex = hex
   if @hex.length <= 4
-    return @hex.rjust(4,"0")
+    return @hex.rjust(4,'0')
   elsif @hex.length <= 5
-    return @hex.rjust(5,"0")
+    return @hex.rjust(5,'0')
   elsif @hex.length <= 6
-    return @hex.rjust(6,"0")
+    return @hex.rjust(6,'0')
   end
 end
 
