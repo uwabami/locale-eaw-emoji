@@ -1,6 +1,6 @@
 # Unicode org
 UNICODE_VER=11.0.0
-UNICODE_URI=http://www.unicode.org/Public/$(UNICODE_VER)/ucd
+UNICODE_URI=https://unicode.org/Public/$(UNICODE_VER)/ucd
 Downloaded_Files  = UnicodeData.txt
 Downloaded_Files += PropList.txt
 Downloaded_Files += EastAsianWidth.txt
