@@ -18,7 +18,7 @@ eaw_and_emoji_elisp = 'locale-eaw-emoji.el'
 
 # COMBINING GRAVE ACCENT..COMBINING LATIN SMALL LETTER X
 $combining_charactor_range = '0300'.to_i(16)..'036F'.to_i(16)
-# MONGORIAN FREE VARIATION_SELECTOR ONE... THREE
+# MONGOLIAN FREE VARIATION_SELECTOR ONE... THREE
 $variation_selector_range1 = '180B'.to_i(16)..'180D'.to_i(16)
 # VARIATION SLECTOR-1..VARIATION_SELECTOR-16
 $variation_selector_range2 = 'FE00'.to_i(16)..'FE0F'.to_i(16)
