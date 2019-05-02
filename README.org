@@ -6,7 +6,7 @@ unicode #UAX11 において文字幅が曖昧(A)，つまり文脈に依存し�
 するための ruby script です．
 
 - [[EastAsianAmbiguous.txt][曖昧文字幅となっている文字の一覧]]
-- [[file:EmojiData.txt][絵文字のうち，Unicode 11.0 で定義されている文字の一覧]]
+- [[file:EmojiData.txt][絵文字のうち，Unicode 12.1 で定義されている文字の一覧]]
 
 使用に際しての責任は取りません/取れませんので，あらかじめご容赦下さい．
 

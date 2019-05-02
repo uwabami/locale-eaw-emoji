@@ -27,9 +27,9 @@ $variation_selector_range3 = 'E0100'.to_i(16)..'E01EF'.to_i(16)
 # Private Use, First .. Private Use, Last
 $private_use_range1  = 'E000'.to_i(16)..'F8FF'.to_i(16)
 # Private Use, First .. Private Use, Last
-$private_use_range2  = 'F0000'.to_i(16)..'FFFFD'.to_i(16)
+$private_use_range2  = 'F0000'.to_i(16)..'FFFFF'.to_i(16)
 # Private Use, First .. Private Use, Last
-$private_use_range3 = '100000'.to_i(16)..'10FFFD'.to_i(16)
+$private_use_range3 = '100000'.to_i(16)..'10FFFF'.to_i(16)
 # Exclude SQUARED THREE D..SQUARED VOD
 $exclude_range = '1F19B'.to_i(16)..'1F1AC'.to_i(16)
  # icons-in-terminal range
