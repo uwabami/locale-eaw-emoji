@@ -33,7 +33,9 @@ $private_use_range3 = '100000'.to_i(16)..'10FFFF'.to_i(16)
 # Exclude SQUARED THREE D..SQUARED VOD
 $exclude_range = '1F19B'.to_i(16)..'1F1AC'.to_i(16)
  # icons-in-terminal range
-$icon_in_terminal_range = 'E0A0'.to_i(16)..'EEE0'.to_i(16)
+$icon_in_terminal_range1 = 'E000'.to_i(16)..'EEFF'.to_i(16)
+ # icons-in-terminal range
+$icon_in_terminal_range2 = 'F000'.to_i(16)..'F8FF'.to_i(16)
 
 def check_unused_range(hex)
   @hex = hex
@@ -41,7 +43,8 @@ def check_unused_range(hex)
   return true  if $variation_selector_range1.cover?(@hex.to_i(16))
   return true  if $variation_selector_range2.cover?(@hex.to_i(16))
   return true  if $variation_selector_range3.cover?(@hex.to_i(16))
-  return false if $icon_in_terminal_range.cover?(@hex.to_i(16))
+  return false if $icon_in_terminal_range1.cover?(@hex.to_i(16))
+  return false if $icon_in_terminal_range2.cover?(@hex.to_i(16))
   return true  if $private_use_range1.cover?(@hex.to_i(16))
   return true  if $private_use_range2.cover?(@hex.to_i(16))
   return true  if $private_use_range3.cover?(@hex.to_i(16))
