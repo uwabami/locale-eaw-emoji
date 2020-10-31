@@ -1,6 +1,6 @@
 # Utilities to generate Unicode data for glibc from upstream Unicode data.
 #
-# Copyright (C) 2014-2019 Free Software Foundation, Inc.
+# Copyright (C) 2014-2020 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 #
 # The GNU C Library is free software; you can redistribute it and/or
@@ -15,7 +15,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public
 # License along with the GNU C Library; if not, see
-# <http://www.gnu.org/licenses/>.
+# <https://www.gnu.org/licenses/>.
 
 '''
 This module contains utilities used by the scripts to generate
