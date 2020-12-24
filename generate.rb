@@ -328,7 +328,7 @@ EOS
 
 ;;;###autoload
 (defun eaw-and-emoji-fullwidth ()
-  "Just shortcut of (eaw-and-emoji-set-width 2)."
+  "Just shortcut of (eaw-set-width 2) and (emoji-set-width 2)."
   (setq nobreak-char-display nil)
   (eaw-set-width 2)
   (emoji-set-width 2)
@@ -336,7 +336,7 @@ EOS
 
 ;;;###autoload
 (defun eaw-half-emoji-fullwidth ()
-  "Just shortcut of (eaw-and-emoji-set-width 2)."
+  "Just shortcut of (eaw-set-width 1) and (emoji-set-width 2)."
   (setq nobreak-char-display nil)
   (eaw-set-width 1)
   (emoji-set-width 2)
