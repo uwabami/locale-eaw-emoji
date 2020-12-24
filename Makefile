@@ -9,6 +9,8 @@ Downloaded_Files += NamesList.txt
 Generated_Files  = UTF-8
 Generated_Files += UTF-8-EAW-EMOJI-FULLWIDTH
 Generated_Files += UTF-8-EAW-EMOJI-FULLWIDTH.gz
+Generated_Files += UTF-8-EAW-HALF-EMOJI-FULLWIDTH
+Generated_Files += UTF-8-EAW-HALF-EMOJI-FULLWIDTH.gz
 Generated_Files += EastAsianAmbiguous.txt
 Generated_Files += EmojiData.txt
 Generated_Files += wcwidth_test_eaw.c
@@ -48,6 +50,9 @@ locale-eaw-emoji.el: UTF-8-EAW-EMOJI-FULLWIDTH.gz
 	@ruby generate.rb $(UNICODE_VER)
 
 UTF-8-EAW-EMOJI-FULLWIDTH.gz: UTF-8-EAW-EMOJI-FULLWIDTH
+	gzip -n -9 -c $^ > $@
+
+UTF-8-EAW-HALF-EMOJI-FULLWIDTH.gz: UTF-8-EAW-HALF-EMOJI-FULLWIDTH
 	gzip -n -9 -c $^ > $@
 
 wcwidth_test_eaw.c: UTF-8-EAW-EMOJI-FULLWIDTH.gz
