@@ -4,9 +4,9 @@
 
 ;; Author: Youhei SASAKI <uwabami@gfd-dennou.org>
 ;; Created: 2015-12-10 08:09:00 +0900
-;; Updated: 2020-12-24 15:29:18 +0900
+;; Updated: 2020-12-24 15:31:52 +0900
 ;; Version: 0.0.2
-;; Package-Version: 20201224.152918
+;; Package-Version: 20201224.153152
 ;; Package-Requires: nil
 ;; Keywords: tools
 ;; URL: https://github.com/uwabami/locale-eaw-emoji
@@ -8022,7 +8022,7 @@
 
 ;;;###autoload
 (defun eaw-and-emoji-fullwidth ()
-  "Just shortcut of (eaw-and-emoji-set-width 2)."
+  "Just shortcut of (eaw-set-width 2) and (emoji-set-width 2)."
   (setq nobreak-char-display nil)
   (eaw-set-width 2)
   (emoji-set-width 2)
@@ -8030,7 +8030,7 @@
 
 ;;;###autoload
 (defun eaw-half-emoji-fullwidth ()
-  "Just shortcut of (eaw-and-emoji-set-width 2)."
+  "Just shortcut of (eaw-set-width 1) and (emoji-set-width 2)."
   (setq nobreak-char-display nil)
   (eaw-set-width 1)
   (emoji-set-width 2)
