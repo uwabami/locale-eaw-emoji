@@ -253,7 +253,7 @@ File.open(eaw_and_emoji_elisp, 'w+'){|f|
 ;; Author: Youhei SASAKI <uwabami@gfd-dennou.org>
 ;; Created: 2015-12-10 08:09:00 +0900
 ;; Updated: #{Time.now}
-;; Version: 0.0.2
+;; Version: 0.0.3
 ;; Package-Version: #{Time.now.strftime("%Y%m%d.%H%M%S")}
 ;; Package-Requires: nil
 ;; Keywords: tools
@@ -288,12 +288,10 @@ File.open(eaw_and_emoji_elisp, 'w+'){|f|
 ;;; Code:
 
 EOS
-  f.puts "(setq east-asian-ambiguous-char\n  '("
+  f.puts "(setq east-asian-ambiguous-and-emoji-char\n  '("
   $list_eaw.each {|k, v|
     f.puts sprintf("    #x%s ; %s", k, v) unless v.nil?
   }
-  f.puts "        ))\n"
-  f.puts "(setq emoji-and-icon-char\n  '("
   $list_emoji.each {|k, v|
     f.puts sprintf("    #x%s ; %s", k, v) unless v.nil?
   }
@@ -303,25 +301,13 @@ EOS
   f.puts "        ))\n"
   f.puts <<-EOS
 ;;;###autoload
-(defun eaw-set-width (width)
+(defun eaw-and-emoji-set-width (width)
   "Set character width in east-asian-ambiguous-and-emoji as `WIDTH'."
   (while (char-table-parent char-width-table)
     (setq char-width-table (char-table-parent char-width-table)))
   (let ((table (make-char-table nil)))
     (mapc (lambda (range) (set-char-table-range table range width))
-          east-asian-ambiguous-char)
-    (optimize-char-table table)
-    (set-char-table-parent table char-width-table)
-    (setq char-width-table table)))
-
-;;;###autoload
-(defun emoji-set-width (width)
-  "Set character width in east-asian-ambiguous-and-emoji as `WIDTH'."
-  (while (char-table-parent char-width-table)
-    (setq char-width-table (char-table-parent char-width-table)))
-  (let ((table (make-char-table nil)))
-    (mapc (lambda (range) (set-char-table-range table range width))
-          emoji-and-icon-char)
+          east-asian-ambiguous-and-emoji-char)
     (optimize-char-table table)
     (set-char-table-parent table char-width-table)
     (setq char-width-table table)))
@@ -330,17 +316,16 @@ EOS
 (defun eaw-and-emoji-fullwidth ()
   "Just shortcut of (eaw-set-width 2) and (emoji-set-width 2)."
   (setq nobreak-char-display nil)
-  (eaw-set-width 2)
-  (emoji-set-width 2)
+  (eaw-and-emoji-set-width 2)
 )
 
-;;;###autoload
-(defun eaw-half-emoji-fullwidth ()
-  "Just shortcut of (eaw-set-width 1) and (emoji-set-width 2)."
-  (setq nobreak-char-display nil)
-  (eaw-set-width 1)
-  (emoji-set-width 2)
-)
+;; ;;;###autoload
+;; (defun eaw-half-emoji-fullwidth ()
+;;   "Just shortcut of (eaw-set-width 1) and (emoji-set-width 2)."
+;;   (setq nobreak-char-display nil)
+;;   (eaw-set-width 1)
+;;   (emoji-set-width 2)
+;; )
 
 (provide 'locale-eaw-emoji)
 
