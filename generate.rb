@@ -125,13 +125,11 @@ $list_eaw["2662"] = "WHITE DIAMOND SUIT"
 $list_eaw["2666"] = "BLACK DIAMOND SUIT"
 
 # icons range
-$icon_range1 = 'E000'.to_i(16)..'EEFF'.to_i(16)
-$icon_range2 = 'F000'.to_i(16)..'F8FF'.to_i(16)
-def check_icon_range(hex)
-  @hex = hex
-  return true if $icon_range1.cover?(@hex.to_i(16))
-  return true if $icon_range2.cover?(@hex.to_i(16))
-end
+# $icon_range = 'E000'.to_i(16)..'F8FF'.to_i(16)
+# def check_icon_range(hex)
+#   @hex = hex
+#   return true if $icon_range.cover?(@hex.to_i(16))
+# end
 $list_icon = {}
 File.open(icons_in_terminal_source).each_line {|line|
   if line =~ /^(\S+)\s+:(.+)/
