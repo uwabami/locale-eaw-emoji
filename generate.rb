@@ -301,7 +301,7 @@ EOS
   f.puts "        ))\n"
   f.puts <<-EOS
 ;;;###autoload
-(defun eaw-set-width (width)
+(defun set-eaw-width (width)
   "Set character width in east-asian-ambiguous-and-emoji as `WIDTH'."
   (while (char-table-parent char-width-table)
     (setq char-width-table (char-table-parent char-width-table)))
@@ -313,7 +313,7 @@ EOS
     (setq char-width-table table)))
 
 ;;;###autoload
-(defun emoji-and-icon-width (width)
+(defun set-emoji-and-icon-width (width)
   "Set character width in east-asian-ambiguous-and-emoji as `WIDTH'."
   (while (char-table-parent char-width-table)
     (setq char-width-table (char-table-parent char-width-table)))

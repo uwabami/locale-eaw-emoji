@@ -4,9 +4,9 @@
 
 ;; Author: Youhei SASAKI <uwabami@gfd-dennou.org>
 ;; Created: 2015-12-10 08:09:00 +0900
-;; Updated: 2021-11-06 13:16:45 +0900
+;; Updated: 2021-11-06 13:26:39 +0900
 ;; Version: 0.0.3
-;; Package-Version: 20211106.131645
+;; Package-Version: 20211106.132639
 ;; Package-Requires: nil
 ;; Keywords: tools
 ;; URL: https://github.com/uwabami/locale-eaw-emoji
@@ -9757,7 +9757,7 @@
     #xF8FF ; PI-BOX
         ))
 ;;;###autoload
-(defun eaw-set-width (width)
+(defun set-eaw-width (width)
   "Set character width in east-asian-ambiguous-and-emoji as `WIDTH'."
   (while (char-table-parent char-width-table)
     (setq char-width-table (char-table-parent char-width-table)))
@@ -9769,7 +9769,7 @@
     (setq char-width-table table)))
 
 ;;;###autoload
-(defun emoji-and-icon-width (width)
+(defun set-emoji-and-icon-width (width)
   "Set character width in east-asian-ambiguous-and-emoji as `WIDTH'."
   (while (char-table-parent char-width-table)
     (setq char-width-table (char-table-parent char-width-table)))
