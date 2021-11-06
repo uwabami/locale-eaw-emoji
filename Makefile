@@ -44,7 +44,7 @@ UTF-8: UnicodeData.txt PropList.txt EastAsianWidth.txt
 		-p PropList.txt --unicode_version $(UNICODE_VER)
 
 UTF-8-EAW-EMOJI-FULLWIDTH: UTF-8 NamesList.txt EmojiSources.txt
-	ruby generate.rb $(UNICODE_VER)
+	@ruby generate.rb $(UNICODE_VER)
 
 locale-eaw-emoji.el: UTF-8-EAW-EMOJI-FULLWIDTH.gz
 	@ruby generate.rb $(UNICODE_VER)
