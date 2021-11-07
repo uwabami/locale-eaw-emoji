@@ -28,6 +28,7 @@ $cjk_compatiblity_ideographic_range = 'F900'.to_i(16)..'FAFF'.to_i(16)
 $variation_selector_range3 = 'E0100'.to_i(16)..'E01EF'.to_i(16)
 $private_use_range2  = 'F0000'.to_i(16)..'FFFFD'.to_i(16)
 $private_use_range3 = '100000'.to_i(16)..'10FFFD'.to_i(16)
+$box_drawing_char_range = '2500'.to_i(16)..'257F'.to_i(16)
 
 def check_range(hex)
   @hex = hex
@@ -288,7 +289,16 @@ File.open(eaw_and_emoji_elisp, 'w+'){|f|
 EOS
   f.puts "(setq east-asian-ambiguous-char\n  '("
   $list_eaw.each {|k, v|
-    f.puts sprintf("    #x%s ; %s", k, v) unless v.nil?
+    unless $box_drawing_char_range.cover?(k.to_i(16))
+      f.puts sprintf("    #x%s ; %s", k, v) unless v.nil?
+    end
+  }
+  f.puts "        ))\n"
+  f.puts "(setq box-drawing-char\n  '("
+  $list_eaw.each {|k, v|
+    if $box_drawing_char_range.cover?(k.to_i(16))
+      f.puts sprintf("    #x%s ; %s", k, v) unless v.nil?
+    end
   }
   f.puts "        ))\n"
   f.puts "(setq emoji-and-icon-char\n  '("
@@ -313,6 +323,18 @@ EOS
     (setq char-width-table table)))
 
 ;;;###autoload
+(defun set-box-drawing-char-width (width)
+  "Set character width in east-asian-ambiguous-and-emoji as `WIDTH'."
+  (while (char-table-parent char-width-table)
+    (setq char-width-table (char-table-parent char-width-table)))
+  (let ((table (make-char-table nil)))
+    (mapc (lambda (range) (set-char-table-range table range width))
+          box-drawing-char)
+    (optimize-char-table table)
+    (set-char-table-parent table char-width-table)
+    (setq char-width-table table)))
+
+;;;###autoload
 (defun set-emoji-and-icon-width (width)
   "Set character width in east-asian-ambiguous-and-emoji as `WIDTH'."
   (while (char-table-parent char-width-table)
@@ -329,6 +351,7 @@ EOS
   "Just shortcut of (set-eaw-width 2) and (set-emoji-and-icon-width 2)."
   (setq nobreak-char-display nil)
   (set-eaw-width 2)
+  (set-box-drawing-char-width 1)
   (set-emoji-and-icon-width 2)
 )
 
@@ -337,6 +360,7 @@ EOS
   "Just shortcut of (set-eaw-width 1) and (set-emoji-and-icon-width 2)."
   (setq nobreak-char-display nil)
   (set-eaw-width 1)
+  (set-box-drawing-char-width 1)
   (set-emoji-and-icon-width 2)
 )
 
@@ -355,7 +379,9 @@ File.open(utf8_output, 'w+'){|f|
   list_full.each {|k, v|
     k_int = k.to_i(16)
     unless v.nil?
-      if k_int <= "0xffff".to_i(16)
+      if $box_drawing_char_range.cover?(k_int)
+        f.puts sprintf("<U%04X> 1 %% %s", k_int, v)
+      elsif k_int <= "0xffff".to_i(16)
         f.puts sprintf("<U%04X> 2 %% %s", k_int, v)
       else
         f.puts sprintf("<U%08X> 2 %% %s", k_int, v)
