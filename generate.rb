@@ -311,37 +311,13 @@ EOS
   f.puts "        ))\n"
   f.puts <<-EOS
 ;;;###autoload
-(defun set-eaw-width (width)
+(defun eaw-set-char-width (char width)
   "Set character width in east-asian-ambiguous-and-emoji as `WIDTH'."
   (while (char-table-parent char-width-table)
-    (setq char-width-table (char-table-parent char-width-table)))
+    (callf char-table-parent char-width-table))
   (let ((table (make-char-table nil)))
     (mapc (lambda (range) (set-char-table-range table range width))
-          east-asian-ambiguous-char)
-    (optimize-char-table table)
-    (set-char-table-parent table char-width-table)
-    (setq char-width-table table)))
-
-;;;###autoload
-(defun set-box-drawing-char-width (width)
-  "Set character width in east-asian-ambiguous-and-emoji as `WIDTH'."
-  (while (char-table-parent char-width-table)
-    (setq char-width-table (char-table-parent char-width-table)))
-  (let ((table (make-char-table nil)))
-    (mapc (lambda (range) (set-char-table-range table range width))
-          box-drawing-char)
-    (optimize-char-table table)
-    (set-char-table-parent table char-width-table)
-    (setq char-width-table table)))
-
-;;;###autoload
-(defun set-emoji-and-icon-width (width)
-  "Set character width in east-asian-ambiguous-and-emoji as `WIDTH'."
-  (while (char-table-parent char-width-table)
-    (setq char-width-table (char-table-parent char-width-table)))
-  (let ((table (make-char-table nil)))
-    (mapc (lambda (range) (set-char-table-range table range width))
-          emoji-and-icon-char)
+          char)
     (optimize-char-table table)
     (set-char-table-parent table char-width-table)
     (setq char-width-table table)))
@@ -350,18 +326,16 @@ EOS
 (defun eaw-and-emoji-fullwidth ()
   "Just shortcut of (set-eaw-width 2) and (set-emoji-and-icon-width 2)."
   (setq nobreak-char-display nil)
-  (set-eaw-width 2)
-  (set-box-drawing-char-width 1)
-  (set-emoji-and-icon-width 2)
+  (eaw-set-char-width east-asian-ambiguous-char 2)
+  (eaw-set-char-width emoji-and-icon-char 2)
 )
 
 ;;;###autoload
 (defun eaw-half-emoji-fullwidth ()
   "Just shortcut of (set-eaw-width 1) and (set-emoji-and-icon-width 2)."
   (setq nobreak-char-display nil)
-  (set-eaw-width 1)
-  (set-box-drawing-char-width 1)
-  (set-emoji-and-icon-width 2)
+  (eaw-set-char-width east-asian-ambiguous-char 1)
+  (eaw-set-char-width emoji-and-icon-char 2)
 )
 
 (provide 'locale-eaw-emoji)
@@ -381,7 +355,7 @@ File.open(utf8_output, 'w+'){|f|
     unless v.nil?
       # if $box_drawing_char_range.cover?(k_int)
       #   f.puts sprintf("<U%04X> 1 %% %s", k_int, v)
-      # els
+      # elsif
       if k_int <= "0xffff".to_i(16)
         f.puts sprintf("<U%04X> 2 %% %s", k_int, v)
       else

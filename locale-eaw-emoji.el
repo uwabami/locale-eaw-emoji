@@ -4,9 +4,9 @@
 
 ;; Author: Youhei SASAKI <uwabami@gfd-dennou.org>
 ;; Created: 2015-12-10 08:09:00 +0900
-;; Updated: 2021-11-07 21:31:15 +0900
+;; Updated: 2021-11-08 16:13:12 +0900
 ;; Version: 0.0.3
-;; Package-Version: 20211107.213115
+;; Package-Version: 20211108.161312
 ;; Package-Requires: nil
 ;; Keywords: tools
 ;; URL: https://github.com/uwabami/locale-eaw-emoji
@@ -9757,37 +9757,14 @@
     #xF8FF ; PI-BOX
         ))
 ;;;###autoload
-(defun set-eaw-width (width)
+(defun eaw-set-char-width (char width)
   "Set character width in east-asian-ambiguous-and-emoji as `WIDTH'."
   (while (char-table-parent char-width-table)
-    (setq char-width-table (char-table-parent char-width-table)))
+    ;; (setq char-width-table (char-table-parent char-width-table))
+    (callf char-table-parent char-width-table))
   (let ((table (make-char-table nil)))
     (mapc (lambda (range) (set-char-table-range table range width))
-          east-asian-ambiguous-char)
-    (optimize-char-table table)
-    (set-char-table-parent table char-width-table)
-    (setq char-width-table table)))
-
-;;;###autoload
-(defun set-box-drawing-char-width (width)
-  "Set character width in east-asian-ambiguous-and-emoji as `WIDTH'."
-  (while (char-table-parent char-width-table)
-    (setq char-width-table (char-table-parent char-width-table)))
-  (let ((table (make-char-table nil)))
-    (mapc (lambda (range) (set-char-table-range table range width))
-          box-drawing-char)
-    (optimize-char-table table)
-    (set-char-table-parent table char-width-table)
-    (setq char-width-table table)))
-
-;;;###autoload
-(defun set-emoji-and-icon-width (width)
-  "Set character width in east-asian-ambiguous-and-emoji as `WIDTH'."
-  (while (char-table-parent char-width-table)
-    (setq char-width-table (char-table-parent char-width-table)))
-  (let ((table (make-char-table nil)))
-    (mapc (lambda (range) (set-char-table-range table range width))
-          emoji-and-icon-char)
+          char)
     (optimize-char-table table)
     (set-char-table-parent table char-width-table)
     (setq char-width-table table)))
@@ -9796,18 +9773,16 @@
 (defun eaw-and-emoji-fullwidth ()
   "Just shortcut of (set-eaw-width 2) and (set-emoji-and-icon-width 2)."
   (setq nobreak-char-display nil)
-  (set-eaw-width 2)
-  (set-box-drawing-char-width 1)
-  (set-emoji-and-icon-width 2)
+  (eaw-set-char-width east-asian-ambiguous-char 2)
+  (eaw-set-char-width emoji-and-icon-char 2)
 )
 
 ;;;###autoload
 (defun eaw-half-emoji-fullwidth ()
   "Just shortcut of (set-eaw-width 1) and (set-emoji-and-icon-width 2)."
   (setq nobreak-char-display nil)
-  (set-eaw-width 1)
-  (set-box-drawing-char-width 1)
-  (set-emoji-and-icon-width 2)
+  (eaw-set-char-width east-asian-ambiguous-char 1)
+  (eaw-set-char-width emoji-and-icon-char 2)
 )
 
 (provide 'locale-eaw-emoji)
