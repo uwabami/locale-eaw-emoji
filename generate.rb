@@ -324,19 +324,18 @@ EOS
 
 ;;;###autoload
 (defun eaw-and-emoji-fullwidth ()
-  "Just shortcut of (set-eaw-width 2) and (set-emoji-and-icon-width 2)."
+  "Set EAW chars, Emojis, Icons as fullwidth"
   (setq nobreak-char-display nil)
-  (eaw-set-char-width east-asian-ambiguous-char 2)
-  (eaw-set-char-width emoji-and-icon-char 2)
-)
+  (eaw-set-char-width
+   (append east-asian-ambiguous-char emoji-and-icon-char) 2)
+  )
 
 ;;;###autoload
 (defun eaw-half-emoji-fullwidth ()
-  "Just shortcut of (set-eaw-width 1) and (set-emoji-and-icon-width 2)."
+  "Set Emojis and Icons as fullwidth"
   (setq nobreak-char-display nil)
-  (eaw-set-char-width east-asian-ambiguous-char 1)
   (eaw-set-char-width emoji-and-icon-char 2)
-)
+  )
 
 (provide 'locale-eaw-emoji)
 

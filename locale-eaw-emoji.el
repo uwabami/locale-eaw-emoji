@@ -4,9 +4,9 @@
 
 ;; Author: Youhei SASAKI <uwabami@gfd-dennou.org>
 ;; Created: 2015-12-10 08:09:00 +0900
-;; Updated: 2021-11-08 16:13:12 +0900
+;; Updated: 2021-11-08 16:29:08 +0900
 ;; Version: 0.0.3
-;; Package-Version: 20211108.161312
+;; Package-Version: 20211108.162908
 ;; Package-Requires: nil
 ;; Keywords: tools
 ;; URL: https://github.com/uwabami/locale-eaw-emoji
@@ -9760,7 +9760,6 @@
 (defun eaw-set-char-width (char width)
   "Set character width in east-asian-ambiguous-and-emoji as `WIDTH'."
   (while (char-table-parent char-width-table)
-    ;; (setq char-width-table (char-table-parent char-width-table))
     (callf char-table-parent char-width-table))
   (let ((table (make-char-table nil)))
     (mapc (lambda (range) (set-char-table-range table range width))
@@ -9771,19 +9770,18 @@
 
 ;;;###autoload
 (defun eaw-and-emoji-fullwidth ()
-  "Just shortcut of (set-eaw-width 2) and (set-emoji-and-icon-width 2)."
+  "Set EAW chars, Emojis, Icons as fullwidth"
   (setq nobreak-char-display nil)
-  (eaw-set-char-width east-asian-ambiguous-char 2)
-  (eaw-set-char-width emoji-and-icon-char 2)
-)
+  (eaw-set-char-width
+   (append east-asian-ambiguous-char emoji-and-icon-char) 2)
+  )
 
 ;;;###autoload
 (defun eaw-half-emoji-fullwidth ()
-  "Just shortcut of (set-eaw-width 1) and (set-emoji-and-icon-width 2)."
+  "Set Emojis and Icons as fullwidth"
   (setq nobreak-char-display nil)
-  (eaw-set-char-width east-asian-ambiguous-char 1)
   (eaw-set-char-width emoji-and-icon-char 2)
-)
+  )
 
 (provide 'locale-eaw-emoji)
 
