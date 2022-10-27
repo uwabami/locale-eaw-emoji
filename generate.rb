@@ -289,9 +289,9 @@ File.open(eaw_and_emoji_elisp, 'w+'){|f|
 EOS
   f.puts "(setq east-asian-ambiguous-char\n  '("
   $list_eaw.each {|k, v|
-    # unless $box_drawing_char_range.cover?(k.to_i(16))
+    unless $box_drawing_char_range.cover?(k.to_i(16))
       f.puts sprintf("    #x%s ; %s", k, v) unless v.nil?
-    # end
+    end
   }
   f.puts "        ))\n"
   # f.puts "(setq box-drawing-char\n  '("
@@ -352,10 +352,9 @@ File.open(utf8_output, 'w+'){|f|
   list_full.each {|k, v|
     k_int = k.to_i(16)
     unless v.nil?
-      # if $box_drawing_char_range.cover?(k_int)
-      #   f.puts sprintf("<U%04X> 1 %% %s", k_int, v)
-      # elsif
-      if k_int <= "0xffff".to_i(16)
+      if $box_drawing_char_range.cover?(k_int)
+        f.puts sprintf("<U%04X> 1 %% %s", k_int, v)
+      elsif k_int <= "0xffff".to_i(16)
         f.puts sprintf("<U%04X> 2 %% %s", k_int, v)
       else
         f.puts sprintf("<U%08X> 2 %% %s", k_int, v)
