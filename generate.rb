@@ -17,35 +17,11 @@ utf8_single = 'UTF-8-EAW-HALF-EMOJI-FULLWIDTH'
 eaw_and_emoji_elisp = 'locale-eaw-emoji.el'
 
 $combining_charactor_range1 = '0300'.to_i(16)..'036F'.to_i(16)
-$variation_selector_range1  = '180B'.to_i(16)..'180D'.to_i(16)
-$combining_charactor_range2 = '1AB0'.to_i(16)..'1AFF'.to_i(16)
-$combining_charactor_range3 = '1DC0'.to_i(16)..'1DFF'.to_i(16)
-$combining_charactor_range4 = '20D0'.to_i(16)..'20FF'.to_i(16)
-$combining_charactor_range5 = 'FE20'.to_i(16)..'FE2F'.to_i(16)
 $private_use_range1  = 'E000'.to_i(16)..'F8FF'.to_i(16)
-$variation_selector_range2 = 'FE00'.to_i(16)..'FE0F'.to_i(16)
-$cjk_compatiblity_ideographic_range = 'F900'.to_i(16)..'FAFF'.to_i(16)
-$variation_selector_range3 = 'E0100'.to_i(16)..'E01EF'.to_i(16)
+$variation_selector_range = 'E0100'.to_i(16)..'E01EF'.to_i(16)
 $private_use_range2  = 'F0000'.to_i(16)..'FFFFD'.to_i(16)
 $private_use_range3 = '100000'.to_i(16)..'10FFFD'.to_i(16)
 $box_drawing_char_range = '2500'.to_i(16)..'257F'.to_i(16)
-
-def check_range(hex)
-  @hex = hex
-  return true if $combining_charactor_range1.cover?(@hex.to_i(16))
-  return true if $variation_selector_range1.cover?(@hex.to_i(16))
-  return true if $combining_charactor_range2.cover?(@hex.to_i(16))
-  return true if $combining_charactor_range3.cover?(@hex.to_i(16))
-  return true if $combining_charactor_range4.cover?(@hex.to_i(16))
-  return true if $combining_charactor_range5.cover?(@hex.to_i(16))
-  return true if $private_use_range1.cover?(@hex.to_i(16))
-  return true if $cjk_compatiblity_ideographic_range.cover?(@hex.to_i(16))
-  return true if $private_use_range2.cover?(@hex.to_i(16))
-  return true if $private_use_range3.cover?(@hex.to_i(16))
-  return true if $variation_selector_range2.cover?(@hex.to_i(16))
-  return true if $variation_selector_range3.cover?(@hex.to_i(16))
-  return false
-end
 
 $unicode_table = {}
 File.open(nameslist_source).each_line{|line|
@@ -54,6 +30,16 @@ File.open(nameslist_source).each_line{|line|
     $unicode_table[data[0]] = data[1]
   end
 }
+
+def check_range(hex)
+  @hex = hex
+  return true if $combining_charactor_range1.cover?(@hex.to_i(16))
+  return true if $private_use_range1.cover?(@hex.to_i(16))
+  return true if $private_use_range2.cover?(@hex.to_i(16))
+  return true if $private_use_range3.cover?(@hex.to_i(16))
+  return true if $variation_selector_range.cover?(@hex.to_i(16))
+  return false
+end
 
 def hex_rjust(hex)
   @hex = hex
@@ -72,37 +58,14 @@ def desc_grep(hex)
   return desc
 end
 
-
-$list_emoji = {}
-File.open(emoji_source).each_line {|line|
-  if line =~ /^([a-fA-F\d]+);.*/
-    range = $1
-    unless check_range(range)
-      $list_emoji["#{range}"] = desc_grep(range)
-    end
-  end
-}
-# emoji...??
-for i in 0x2700..0x27FF
-  unless $list_emoji["#{i.to_s(16).upcase}"]
-    $list_emoji["#{i.to_s(16).upcase}"] = desc_grep(i.to_s(16).upcase)
-  end
-end
-# emoji...?
-for i in 0x1f000..0x1fffd
-  unless $list_emoji["#{i.to_s(16).upcase}"]
-    $list_emoji["#{i.to_s(16).upcase}"] = desc_grep(i.to_s(16).upcase)
-  end
-end
-
 # East Asian Ambiguous width
 $list_eaw = {}
 File.open(eaw_source).each_line {|line|
-  if line =~/^([a-fA-F\d\.]+);(\w+)\s+#\s+.*/
+  if line =~/^([0-9A-Fa-f\d\.]+);(\w+)\s+#\s+.*/
     range = $1
     prop = $2
     if prop == 'A'
-      if range =~/([a-fA-F\d]+)\.\.([a-fA-F\d]+)/
+      if range =~/([0-9A-Fa-f\d]+)\.\.([0-9A-Fa-f\d]+)/
         range_start = $1
         range_end = $2
         unless check_range range_start
@@ -125,12 +88,28 @@ $list_eaw["2662"] = "WHITE DIAMOND SUIT"
 # 2666 BLACK DIAMOND SUIT : this char is defined as Neutral... ???
 $list_eaw["2666"] = "BLACK DIAMOND SUIT"
 
-# icons range
-# $icon_range = 'E000'.to_i(16)..'F8FF'.to_i(16)
-# def check_icon_range(hex)
-#   @hex = hex
-#   return true if $icon_range.cover?(@hex.to_i(16))
-# end
+$list_emoji = {}
+File.open(emoji_source).each_line {|line|
+  if line =~ /^([0-9A-Fa-f\d\.]+);.*/
+    range = $1
+    unless check_range(range)
+      $list_emoji["#{range}"] = desc_grep(range)
+    end
+  end
+}
+# emoji...??
+for i in 0x2600..0x27FF
+  unless $list_emoji["#{i.to_s(16).upcase}"]
+    $list_emoji["#{i.to_s(16).upcase}"] = desc_grep(i.to_s(16).upcase)
+  end
+end
+# emoji...?
+for i in 0x1f000..0x1fffd
+  unless $list_emoji["#{i.to_s(16).upcase}"]
+    $list_emoji["#{i.to_s(16).upcase}"] = desc_grep(i.to_s(16).upcase)
+  end
+end
+
 $list_icon = {}
 File.open(icons_in_terminal_source).each_line {|line|
   if line =~ /^(\S+)\s+:(.+)/
@@ -138,7 +117,6 @@ File.open(icons_in_terminal_source).each_line {|line|
     $list_icon["#{range}"] = $1
   end
 }
-
 
 File.open(output_eaw_amb, 'w+'){|f|
   $list_eaw.sort{|(k1,v1), (k2,v2)| k1.to_i(16) <=> k2.to_i(16)}.each  {|k, v|

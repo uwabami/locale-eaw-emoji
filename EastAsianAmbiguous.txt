@@ -754,6 +754,22 @@
 [㉍] U+324D CIRCLED NUMBER SIXTY ON BLACK SQUARE
 [㉎] U+324E CIRCLED NUMBER SEVENTY ON BLACK SQUARE
 [㉏] U+324F CIRCLED NUMBER EIGHTY ON BLACK SQUARE
+[︀] U+FE00 
+[︁] U+FE01 
+[︂] U+FE02 
+[︃] U+FE03 
+[︄] U+FE04 
+[︅] U+FE05 
+[︆] U+FE06 
+[︇] U+FE07 
+[︈] U+FE08 
+[︉] U+FE09 
+[︊] U+FE0A 
+[︋] U+FE0B 
+[︌] U+FE0C 
+[︍] U+FE0D 
+[︎] U+FE0E 
+[️] U+FE0F 
 [�] U+FFFD 
 [🄀] U+0001F100 DIGIT ZERO FULL STOP
 [🄁] U+0001F101 DIGIT ZERO COMMA
