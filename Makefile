@@ -11,6 +11,8 @@ Generated_Files += UTF-8-EAW-EMOJI-FULLWIDTH
 Generated_Files += UTF-8-EAW-EMOJI-FULLWIDTH.gz
 Generated_Files += UTF-8-EAW-HALF-EMOJI-FULLWIDTH
 Generated_Files += UTF-8-EAW-HALF-EMOJI-FULLWIDTH.gz
+Generated_Files += UTF-8-EAW-EMOJI-HALFWIDTH
+Generated_Files += UTF-8-EAW-EMOJI-HALFWIDTH.gz
 Generated_Files += EastAsianAmbiguous.txt
 Generated_Files += EmojiData.txt
 Generated_Files += wcwidth_test_eaw.c
@@ -46,13 +48,14 @@ UTF-8: UnicodeData.txt PropList.txt EastAsianWidth.txt
 UTF-8-EAW-EMOJI-FULLWIDTH: UTF-8 NamesList.txt EmojiSources.txt
 	@ruby generate.rb $(UNICODE_VER)
 
-locale-eaw-emoji.el: UTF-8-EAW-EMOJI-FULLWIDTH.gz
-	@ruby generate.rb $(UNICODE_VER)
+UTF-8-EAW-HALF-EMOJI-FULLWIDTH: UTF-8-EAW-EMOJI-FULLWIDTH
+UTF-8-EAW-EMOJI-HALFWIDTH: UTF-8-EAW-EMOJI-FULLWIDTH
 
 UTF-8-EAW-EMOJI-FULLWIDTH.gz: UTF-8-EAW-EMOJI-FULLWIDTH
 	gzip -n -9 -c $^ > $@
-
 UTF-8-EAW-HALF-EMOJI-FULLWIDTH.gz: UTF-8-EAW-HALF-EMOJI-FULLWIDTH
+	gzip -n -9 -c $^ > $@
+UTF-8-EAW-EMOJI-HALFWIDTH.gz: UTF-8-EAW-EMOJI-HALFWIDTH
 	gzip -n -9 -c $^ > $@
 
 wcwidth_test_eaw.c: UTF-8-EAW-EMOJI-FULLWIDTH.gz
@@ -62,4 +65,4 @@ wcwidth_test_icons.c: UTF-8-EAW-EMOJI-FULLWIDTH.gz
 clean:
 	-rm -rf $(Downloaded_Files) *.out
 distclean: clean
-	-rm -rf $(Generated_Files) __pycache__
+	-rm -rf $(Generated_Files) __pycache__ *.elc

@@ -5,23 +5,19 @@ eaw_source = 'EastAsianWidth.txt'
 emoji_source = 'EmojiSources.txt'
 nameslist_source = 'NamesList.txt'
 utf8_source = 'UTF-8'
-icons_in_terminal_source = 'icons-in-terminal-mapping.txt'
 # define output
 output_eaw_amb = 'EastAsianAmbiguous.txt'
 output_emoji = 'EmojiData.txt'
 wcwidth_test_eaw = 'wcwidth_test_eaw.c'
 wcwidth_test_emoji = 'wcwidth_test_emoji.c'
 wcwidth_test_icons = 'wcwidth_test_icons.c'
-utf8_output = 'UTF-8-EAW-EMOJI-FULLWIDTH'
-utf8_single = 'UTF-8-EAW-HALF-EMOJI-FULLWIDTH'
+utf8_fullwidth = 'UTF-8-EAW-EMOJI-FULLWIDTH'
+utf8_eawsingle = 'UTF-8-EAW-HALF-EMOJI-FULLWIDTH'
+utf8_singlewidth = 'UTF-8-EAW-EMOJI-HALFWIDTH'
 eaw_and_emoji_elisp = 'locale-eaw-emoji.el'
+nerd_icons_source = 'nerd-icons-mapping.txt'
 
-$combining_charactor_range1 = '0300'.to_i(16)..'036F'.to_i(16)
-$private_use_range1  = 'E000'.to_i(16)..'F8FF'.to_i(16)
-$variation_selector_range = 'E0100'.to_i(16)..'E01EF'.to_i(16)
-$private_use_range2  = 'F0000'.to_i(16)..'FFFFD'.to_i(16)
-$private_use_range3 = '100000'.to_i(16)..'10FFFD'.to_i(16)
-$box_drawing_char_range = '2500'.to_i(16)..'257F'.to_i(16)
+$box_drawing_char_range             = '2500'.to_i(16)..'257F'.to_i(16)
 
 $unicode_table = {}
 File.open(nameslist_source).each_line{|line|
@@ -30,16 +26,6 @@ File.open(nameslist_source).each_line{|line|
     $unicode_table[data[0]] = data[1]
   end
 }
-
-def check_range(hex)
-  @hex = hex
-  return true if $combining_charactor_range1.cover?(@hex.to_i(16))
-  return true if $private_use_range1.cover?(@hex.to_i(16))
-  return true if $private_use_range2.cover?(@hex.to_i(16))
-  return true if $private_use_range3.cover?(@hex.to_i(16))
-  return true if $variation_selector_range.cover?(@hex.to_i(16))
-  return false
-end
 
 def hex_rjust(hex)
   @hex = hex
@@ -68,15 +54,11 @@ File.open(eaw_source).each_line {|line|
       if range =~/([0-9A-Fa-f\d]+)\.\.([0-9A-Fa-f\d]+)/
         range_start = $1
         range_end = $2
-        unless check_range range_start
-          for i in range_start.to_i(16)..range_end.to_i(16)
-            $list_eaw["#{hex_rjust(i.to_s(16).upcase)}"] = desc_grep("#{i.to_s(16)}")
-          end
+        for i in range_start.to_i(16)..range_end.to_i(16)
+          $list_eaw["#{hex_rjust(i.to_s(16).upcase)}"] = desc_grep("#{i.to_s(16)}")
         end
       else
-        unless check_range range
-          $list_eaw["#{hex_rjust(range).upcase}"] = desc_grep("#{range}")
-        end
+        $list_eaw["#{hex_rjust(range).upcase}"] = desc_grep("#{range}")
       end
     end
   end
@@ -92,9 +74,7 @@ $list_emoji = {}
 File.open(emoji_source).each_line {|line|
   if line =~ /^([0-9A-Fa-f\d\.]+);.*/
     range = $1
-    unless check_range(range)
-      $list_emoji["#{range}"] = desc_grep(range)
-    end
+    $list_emoji["#{range}"] = desc_grep(range)
   end
 }
 # emoji...??
@@ -110,8 +90,15 @@ for i in 0x1f000..0x1fffd
   end
 end
 
+# remove EMOJI from EAW, duplicates
+$list_eaw.each {|k, v|
+  if $list_emoji[k]
+    $list_eaw.delete(k)
+  end
+}
+
 $list_icon = {}
-File.open(icons_in_terminal_source).each_line {|line|
+File.open(nerd_icons_source).each_line {|line|
   if line =~ /^(\S+)\s+:(.+)/
     range = $2
     $list_icon["#{range}"] = $1
@@ -142,12 +129,6 @@ File.open(output_emoji, 'w+'){|f|
   }
 }
 
-# remove EMOJI from EAW, duplicates
-$list_eaw.each {|k, v|
-  if $list_emoji[k]
-    $list_eaw.delete(k)
-  end
-}
 
 File.open(wcwidth_test_eaw,'w+' ){|f|
   f.puts <<-EOS
@@ -324,7 +305,7 @@ EOS
 list_full = $list_eaw.merge($list_emoji.merge($list_icon)).sort{|(k1,v1), (k2,v2)| k1.to_i(16) <=> k2.to_i(16)}
 list_emoji_icon = $list_emoji.merge($list_icon).sort{|(k1,v1), (k2,v2)| k1.to_i(16) <=> k2.to_i(16)}
 list_eaw = $list_eaw.sort{|(k1,v1), (k2,v2)| k1.to_i(16) <=> k2.to_i(16)}
-File.open(utf8_output, 'w+'){|f|
+File.open(utf8_fullwidth, 'w+'){|f|
   f.puts File.readlines(utf8_source)[0..-2]
   f.puts "% Add East Asian Amb. char, Emoji, Icon as fullwidth"
   list_full.each {|k, v|
@@ -342,7 +323,7 @@ File.open(utf8_output, 'w+'){|f|
   f.puts "END WIDTH"
 }
 
-File.open(utf8_single, 'w+'){|f|
+File.open(utf8_eawsingle, 'w+'){|f|
   f.puts File.readlines(utf8_source)[0..-2]
   f.puts "% Add East Asian Amb. Char as halfwidth, Emoji&Icon as fullwidth"
   list_eaw.each {|k, v|
@@ -362,6 +343,31 @@ File.open(utf8_single, 'w+'){|f|
         f.puts sprintf("<U%04X> 2 %% %s", k_int, v)
       else
         f.puts sprintf("<U%08X> 2 %% %s", k_int, v)
+      end
+    end
+  }
+  f.puts "END WIDTH"
+}
+File.open(utf8_singlewidth, 'w+'){|f|
+  f.puts File.readlines(utf8_source)[0..-2]
+  f.puts "% Add East Asian Amb. Char, Emoji&Icon as halfwidth"
+  list_eaw.each {|k, v|
+    k_int = k.to_i(16)
+    unless v.nil?
+      if k_int <= "0xffff".to_i(16)
+        f.puts sprintf("<U%04X> 1 %% %s", k_int, v)
+      else
+        f.puts sprintf("<U%08X> 1 %% %s", k_int, v)
+      end
+    end
+  }
+  list_emoji_icon.each {|k, v|
+    k_int = k.to_i(16)
+    unless v.nil?
+      if k_int <= "0xffff".to_i(16)
+        f.puts sprintf("<U%04X> 1 %% %s", k_int, v)
+      else
+        f.puts sprintf("<U%08X> 1 %% %s", k_int, v)
       end
     end
   }
