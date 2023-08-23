@@ -4,9 +4,9 @@
 
 ;; Author: Youhei SASAKI <uwabami@gfd-dennou.org>
 ;; Created: 2015-12-10 08:09:00 +0900
-;; Updated: 2023-08-23 19:21:28 +0900
+;; Updated: 2023-08-23 19:26:28 +0900
 ;; Version: 0.0.3
-;; Package-Version: 20230823.192128
+;; Package-Version: 20230823.192628
 ;; Package-Requires: nil
 ;; Keywords: tools
 ;; URL: https://github.com/uwabami/locale-eaw-emoji
