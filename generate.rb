@@ -15,7 +15,7 @@ utf8_fullwidth = 'UTF-8-EAW-EMOJI-FULLWIDTH'
 utf8_eawsingle = 'UTF-8-EAW-HALF-EMOJI-FULLWIDTH'
 utf8_singlewidth = 'UTF-8-EAW-EMOJI-HALFWIDTH'
 eaw_and_emoji_elisp = 'locale-eaw-emoji.el'
-nerd_icons_source = 'nerd-icons-mapping.txt'
+icons_source = 'icons-mapping.txt'
 
 $box_drawing_char_range             = '2500'.to_i(16)..'257F'.to_i(16)
 
@@ -98,7 +98,7 @@ $list_eaw.each {|k, v|
 }
 
 $list_icon = {}
-File.open(nerd_icons_source).each_line {|line|
+File.open(icons_source).each_line {|line|
   if line =~ /^(\S+)\s+:(.+)/
     range = $2
     $list_icon["#{range}"] = $1
