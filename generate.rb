@@ -22,6 +22,7 @@ $private_use_range1        = 'E000'.to_i(16)..'F8FF'.to_i(16)
 $variation_selector_range  = 'E0100'.to_i(16)..'E01EF'.to_i(16)
 $private_use_range2        = 'F0000'.to_i(16)..'FFFFD'.to_i(16)
 $private_use_range3        = '100000'.to_i(16)..'10FFFD'.to_i(16)
+
 $box_drawing_char_range    = '2500'.to_i(16)..'257F'.to_i(16)
 
 def check_range(hex)
@@ -62,7 +63,7 @@ end
 # East Asian Ambiguous width
 $list_eaw = {}
 File.open(eaw_source).each_line {|line|
-  if line =~/^([0-9A-Fa-f\d\.]+);(\w+)\s+#\s+.*/
+  if line =~ /^([0-9A-Fa-f\d\.]+);(\w+)\s+#\s+.*/
     range = $1
     prop = $2
     if prop == 'A'
@@ -82,12 +83,12 @@ File.open(eaw_source).each_line {|line|
     end
   end
 }
-# 2080 SUBSCRIPT ZERO : this char is defined as Neutral... ???
-$list_eaw["2080"] = "SUBSCRIPT ZERO"
-# 2662 WHITE DIAMOND SUIT : this char is defined as Neutral... ???
-$list_eaw["2662"] = "WHITE DIAMOND SUIT"
-# 2666 BLACK DIAMOND SUIT : this char is defined as Neutral... ???
-$list_eaw["2666"] = "BLACK DIAMOND SUIT"
+# # 2080 SUBSCRIPT ZERO : this char is defined as Neutral... ???
+# $list_eaw["2080"] = "SUBSCRIPT ZERO"
+# # 2662 WHITE DIAMOND SUIT : this char is defined as Neutral... ???
+# $list_eaw["2662"] = "WHITE DIAMOND SUIT"
+# # 2666 BLACK DIAMOND SUIT : this char is defined as Neutral... ???
+# $list_eaw["2666"] = "BLACK DIAMOND SUIT"
 # pp $list_eaw
 
 $list_emoji = {}
@@ -100,25 +101,25 @@ File.open(emoji_source).each_line {|line|
   end
 }
 
-# emoji...??
-for i in 0x2600..0x27FF
-  unless $list_emoji["#{i.to_s(16).upcase}"]
-    $list_emoji["#{i.to_s(16).upcase}"] = desc_grep(i.to_s(16).upcase)
-  end
-end
-# emoji...?
-for i in 0x1f000..0x1fffd
-  unless $list_emoji["#{i.to_s(16).upcase}"]
-    $list_emoji["#{i.to_s(16).upcase}"] = desc_grep(i.to_s(16).upcase)
-  end
-end
+# # emoji...??
+# for i in 0x2600..0x27FF
+#   unless $list_emoji["#{i.to_s(16).upcase}"]
+#     $list_emoji["#{i.to_s(16).upcase}"] = desc_grep(i.to_s(16).upcase)
+#   end
+# end
+# # emoji...?
+# for i in 0x1f000..0x1fffd
+#   unless $list_emoji["#{i.to_s(16).upcase}"]
+#     $list_emoji["#{i.to_s(16).upcase}"] = desc_grep(i.to_s(16).upcase)
+#   end
+# end
 
-# remove EMOJI from EAW, duplicates
-$list_eaw.each {|k, v|
-  if $list_emoji[k]
-    $list_eaw.delete(k)
-  end
-}
+# # remove EAW from Emoji
+# $list_emoji.each {|k, v|
+#   if $list_eaw[k]
+#     $list_emoji.delete(k)
+#   end
+# }
 
 $list_icon = {}
 File.open(icons_source).each_line {|line|
@@ -316,6 +317,13 @@ EOS
   "Set Emojis and Icons as fullwidth"
   (setq nobreak-char-display nil)
   (eaw-set-char-width emoji-and-icon-char 2)
+  )
+
+;;;###autoload
+(defun eaw-halfwidth ()
+  "Set EAW char as halfwidth, don't touch emoji and icons"
+  (setq nobreak-char-display nil)
+  (eaw-set-char-width east-asian-ambiguous-char 1)
   )
 
 (provide 'locale-eaw-emoji)
