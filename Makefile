@@ -1,5 +1,5 @@
 # Unicode org
-UNICODE_VER=15.0.0
+UNICODE_VER=16.0.0
 UNICODE_URI=https://unicode.org/Public/$(UNICODE_VER)/ucd
 Downloaded_Files  = UnicodeData.txt
 Downloaded_Files += PropList.txt
